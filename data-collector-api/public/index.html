@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Collector</title>
+</head>
+<body>
+    <h1>Data Collector</h1>
+    
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label for="registerUsername">Username:</label>
+        <input type="text" id="registerUsername" name="registerUsername" required>
+        <br>
+        <label for="registerPassword">Password:</label>
+        <input type="password" id="registerPassword" name="registerPassword" required>
+        <br>
+        <button type="submit">Register</button>
+    </form>
+
+    <h2>Submit Data</h2>
+    <form id="dataForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="id">ID:</label>
+        <input type="text" id="id" name="id" required>
+        <br>
+        <label for="value">Value:</label>
+        <input type="text" id="value" name="value" required>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Retrieve Data</h2>
+    <form id="retrieveForm">
+        <label for="retrieveUsername">Username:</label>
+        <input type="text" id="retrieveUsername" name="retrieveUsername" required>
+        <br>
+        <label for="retrieveId">ID:</label>
+        <input type="text" id="retrieveId" name="retrieveId" required>
+        <br>
+        <button type="submit">Retrieve</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    alert('User has been registered');
+                } else {
+                    alert('Failed to register user');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to register user');
+            }
+        });
+
+        document.getElementById('dataForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const id = document.getElementById('id').value;
+            const value = document.getElementById('value').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, id, value })
+                });
+
+                if (response.ok) {
+                    alert('Data has been submitted');
+                } else {
+                    alert('Failed to submit data');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to submit data');
+            }
+        });
+
+        document.getElementById('retrieveForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const username = document.getElementById('retrieveUsername').value;
+            const id = document.getElementById('retrieveId').value;
+
+            try {
+                const response = await fetch(`http://localhost:3000/data/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'username': username
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+                } else {
+                    alert('Failed to retrieve data');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            }
+        });
+    </script>
+</body>
+</html>
