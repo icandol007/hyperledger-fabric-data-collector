@@ -1,2 +1,0 @@
-# hyperledger-data-collector
- 
