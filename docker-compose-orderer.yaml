@@ -1,0 +1,33 @@
+services:  # Docker Compose의 서비스 정의 시작
+
+  orderer.data-collector.com:  # Orderer 서비스 정의
+    container_name: orderer.data-collector.com  # 컨테이너 이름 설정
+    image: hyperledger/fabric-orderer:latest  # 사용할 도커 이미지 설정
+    environment:  # Orderer 환경 변수 설정
+      - ORDERER_GENERAL_LOGLEVEL=info  # 로그 레벨 설정
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0  # Orderer가 바인딩할 주소
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=file  # 부트스트랩 방식 설정 (파일)
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/orderer/orderer.genesis.block  # 제네시스 블록 파일 경로
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP  # Orderer의 MSP ID 설정
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp  # MSP 디렉터리 경로
+      - ORDERER_GENERAL_TLS_ENABLED=true  # TLS 사용 설정
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key  # TLS 프라이빗 키 파일 경로
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt  # TLS 인증서 파일 경로
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]  # TLS 루트 인증서 경로
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric  # 컨테이너의 작업 디렉터리 설정
+    command: orderer  # 컨테이너 실행 시 사용할 명령어
+    volumes:  # 호스트와 컨테이너 간에 공유할 디렉터리 설정
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block  # 제네시스 블록 파일 공유
+        - ./crypto-config/ordererOrganizations/data-collector.com/orderers/orderer0.data-collector.com/msp:/var/hyperledger/orderer/msp  # MSP 디렉터리 공유
+        - ./crypto-config/ordererOrganizations/data-collector.com/orderers/orderer0.data-collector.com/tls:/var/hyperledger/orderer/tls  # TLS 디렉터리 공유
+        - orderer0.data-collector.com:/var/hyperledger/production/orderer  # Orderer 데이터 디렉터리 공유
+    ports:  # 호스트와 컨테이너 간에 매핑할 포트 설정
+      - 7050:7050  # 호스트의 7050 포트를 컨테이너의 7050 포트와 매핑
+    networks:  # 컨테이너가 연결될 네트워크 설정
+      - basic
+
+volumes:  # 볼륨 정의
+  orderer0.data-collector.com:  # Orderer 볼륨 정의
+
+networks:  # 네트워크 정의
+  basic:  # 기본 네트워크 이름
