@@ -33,6 +33,7 @@ func (s *VoteContract) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	}
 }
 
+// CastVote : 투표 데이터를 생성
 func (s *VoteContract) CastVote(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if len(args) != 3 {
 		return shim.Error("Incorrect number of arguments. Expecting 3")
@@ -53,6 +54,7 @@ func (s *VoteContract) CastVote(stub shim.ChaincodeStubInterface, args []string)
 	return shim.Success(nil)
 }
 
+// QueryVote : ID를 이용해서 투표 데이터를 검색
 func (s *VoteContract) QueryVote(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")

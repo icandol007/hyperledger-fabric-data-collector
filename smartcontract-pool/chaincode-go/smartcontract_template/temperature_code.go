@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/hyperledger/fabric-chaincode-go/shim"
+	"github.com/hyperledger/fabric-protos-go/peer"
 )
 
 // TemperatureRecord represents a temperature record
@@ -20,12 +21,12 @@ type TemperatureChaincode struct {
 }
 
 // Init initializes the chaincode
-func (t *TemperatureChaincode) Init(stub shim.ChaincodeStubInterface) shim.Response {
+func (t *TemperatureChaincode) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	return shim.Success(nil)
 }
 
 // Invoke routes the chaincode functions
-func (t *TemperatureChaincode) Invoke(stub shim.ChaincodeStubInterface) shim.Response {
+func (t *TemperatureChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	function, args := stub.GetFunctionAndParameters()
 	switch function {
 	case "RecordTemperature":
@@ -37,8 +38,8 @@ func (t *TemperatureChaincode) Invoke(stub shim.ChaincodeStubInterface) shim.Res
 	}
 }
 
-// RecordTemperature records a new temperature entry
-func (t *TemperatureChaincode) RecordTemperature(stub shim.ChaincodeStubInterface, args []string) shim.Response {
+// RecordTemperature : 온도 데이터를 기록. 지역과 타임스탬프를 키로 사용하여 온도 데이터를 상태 데이터베이스에 저장
+func (t *TemperatureChaincode) RecordTemperature(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if len(args) != 3 {
 		return shim.Error("Incorrect number of arguments. Expecting 3")
 	}
@@ -50,7 +51,7 @@ func (t *TemperatureChaincode) RecordTemperature(stub shim.ChaincodeStubInterfac
 	}
 	timestamp := args[2]
 
-	// Create a new temperature record
+	// 데이터 생성
 	record := TemperatureRecord{
 		Region:      region,
 		Temperature: temperature,
@@ -62,7 +63,7 @@ func (t *TemperatureChaincode) RecordTemperature(stub shim.ChaincodeStubInterfac
 		return shim.Error("Failed to marshal record")
 	}
 
-	// Save the record to the ledger
+	// 생성된 데이터 원장에 저장
 	err = stub.PutState(region+"_"+timestamp, recordBytes)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("Failed to record temperature for region %s", region))
@@ -71,8 +72,8 @@ func (t *TemperatureChaincode) RecordTemperature(stub shim.ChaincodeStubInterfac
 	return shim.Success(nil)
 }
 
-// QueryTemperature retrieves a temperature record
-func (t *TemperatureChaincode) QueryTemperature(stub shim.ChaincodeStubInterface, args []string) shim.Response {
+// QueryTemperature : 지역과 타임스탬프를 사용하여 상태 데이터베이스에서 온도 데이터를 조회
+func (t *TemperatureChaincode) QueryTemperature(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
@@ -80,7 +81,7 @@ func (t *TemperatureChaincode) QueryTemperature(stub shim.ChaincodeStubInterface
 	region := args[0]
 	timestamp := args[1]
 
-	// Retrieve the temperature record from the ledger
+	// 원장에서 온도 데이터를 검색
 	recordBytes, err := stub.GetState(region + "_" + timestamp)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("Failed to get record for region %s", region))
