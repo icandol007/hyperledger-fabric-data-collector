@@ -90,6 +90,9 @@ Application: &ApplicationDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "ANY Endorsement"
     Capabilities:
         <<: *ApplicationCapabilities
 
@@ -137,6 +140,9 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "ANY Endorsement"
     Capabilities:
         <<: *ChannelCapabilities
 
