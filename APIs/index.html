@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Collection Session</title>
+</head>
+<body>
+    <h1>Data Collection Session</h1>
+
+    <h2>Create Data Collection Session</h2>
+    <form id="createSessionForm">
+        <label for="sessionName">Session Name:</label>
+        <input type="text" id="sessionName" name="sessionName" required>
+        <br>
+        <label for="metadata">Metadata:</label>
+        <input type="text" id="metadata" name="metadata" required>
+        <br>
+        <label for="items">Items (comma separated):</label>
+        <input type="text" id="items" name="items" required>
+        <br>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <button type="submit">Create Session</button>
+    </form>
+
+    <script>
+        document.getElementById('createSessionForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const sessionName = document.getElementById('sessionName').value;
+            const metadata = document.getElementById('metadata').value;
+            const items = document.getElementById('items').value.split(',');
+            const username = document.getElementById('username').value;
+
+            try {
+                const response = await fetch('/createSession', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ sessionName, metadata, items, username })
+                });
+
+                if (response.ok) {
+                    alert('New data collection session created and chaincode deployed');
+                } else {
+                    alert('Failed to create session');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to create session');
+            }
+        });
+    </script>
+</body>
+</html>

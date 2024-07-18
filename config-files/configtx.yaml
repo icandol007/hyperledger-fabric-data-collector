@@ -1,4 +1,3 @@
----
 Organizations:
     - &OrdererOrg
         Name: OrdererOrg
@@ -91,6 +90,9 @@ Application: &ApplicationDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "ANY Endorsement"
     Capabilities:
         <<: *ApplicationCapabilities
 
@@ -107,9 +109,10 @@ Orderer: &OrdererDefaults
         Consenters:
             - Host: orderer.data-collector.com
               Port: 7050
-              ClientTLSCert: crypto-config/ordererOrganizations/data-collector.com/orderers/orderer0.data-collector.com/tls/server.crt
-              ServerTLSCert: crypto-config/ordererOrganizations/data-collector.com/orderers/orderer0.data-collector.com/tls/server.crt
+              ClientTLSCert: crypto-config/ordererOrganizations/data-collector.com/orderers/orderer.data-collector.com/tls/server.crt
+              ServerTLSCert: crypto-config/ordererOrganizations/data-collector.com/orderers/orderer.data-collector.com/tls/server.crt
     Organizations:
+        - *OrdererOrg  # 수정: Orderer 조직 추가
     Policies:
         Readers:
             Type: ImplicitMeta
@@ -137,6 +140,9 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "ANY Endorsement"
     Capabilities:
         <<: *ChannelCapabilities
 
@@ -148,7 +154,7 @@ Profiles:
             Organizations:
                 - *OrdererOrg
         Consortiums:
-            data-collectorConsortium:
+            DataCollectorConsortium:  # 수정: Consortium 이름을 일관성 있게 수정
                 Organizations:
                     - *Org1
                     - *Org2
@@ -156,7 +162,7 @@ Profiles:
 
     Channel:
         <<: *ChannelDefaults
-        Consortium: data-collectorConsortium
+        Consortium: DataCollectorConsortium  # 수정: Consortium 이름을 일관성 있게 수정
         Application:
             <<: *ApplicationDefaults
             Organizations:

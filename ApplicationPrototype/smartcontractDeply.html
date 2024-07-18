@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy Smart Contract</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response-message {
+            margin-top: 10px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deploy Smart Contract</h1>
+        <label for="templateSelect">Select Template:</label>
+        <select id="templateSelect" required>
+            <option value="">--Select a Template--</option>
+        </select>
+        <button id="deployButton">Deploy Contract</button>
+        <p id="responseMessage" class="response-message"></p>
+    </div>
+
+    <script>
+        // Function to fetch and populate templates from CouchDB
+        async function loadTemplates() {
+            try {
+                const response = await fetch('http://localhost:3001/api/getTemplates');
+                const templates = await response.json();
+
+                const selectElement = document.getElementById('templateSelect');
+                selectElement.innerHTML = '<option value="">--Select a Template--</option>'; // Clear existing options
+
+                templates.forEach(template => {
+                    const option = document.createElement('option');
+                    option.value = template._id;
+                    option.textContent = template._id; // Display ID in dropdown
+                    selectElement.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching templates:', error);
+                document.getElementById('responseMessage').textContent = `Error fetching templates: ${error.message}`;
+            }
+        }
+
+        // Function to handle contract deployment
+        async function deployContract() {
+            const templateId = document.getElementById('templateSelect').value;
+            if (!templateId) {
+                document.getElementById('responseMessage').textContent = 'Please select a template.';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3001/api/deployContract', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        templateId
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    document.getElementById('responseMessage').textContent = `Contract deployed successfully: ${result.message}`;
+                } else {
+                    document.getElementById('responseMessage').textContent = `Error deploying contract: ${result.message}`;
+                }
+            } catch (error) {
+                document.getElementById('responseMessage').textContent = `Error deploying contract: ${error.message}`;
+            }
+        }
+
+        // Load templates on page load
+        document.addEventListener('DOMContentLoaded', loadTemplates);
+
+        // Bind deploy button click event
+        document.getElementById('deployButton').addEventListener('click', deployContract);
+    </script>
+</body>
+</html>
