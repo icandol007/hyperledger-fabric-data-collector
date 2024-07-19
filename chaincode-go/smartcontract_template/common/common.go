@@ -5,5 +5,6 @@ type CommonAttributes struct {
 	ID     string `json:"id"`
 	Name   string `json:"name"`
 	Age    int    `json:"age"`
+	Region string `json:"region"`
 	Gender string `json:"gender"`
 }
