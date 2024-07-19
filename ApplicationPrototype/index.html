@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vote Setup</title>
+</head>
+<body>
+    <h1>Create Voting</h1>
+    <form id="voteForm">
+        <label for="candidateCount">Number of Candidates:</label>
+        <input type="number" id="candidateCount" name="candidateCount"><br><br>
+        
+        <div id="candidateNames"></div>
+        
+        <button type="button" onclick="createVoting()">Create Voting</button>
+    </form>
+
+    <script>
+        function createVoting() {
+            const candidateCount = document.getElementById('candidateCount').value;
+            const candidateNames = [];
+
+            for (let i = 0; i < candidateCount; i++) {
+                const name = document.getElementById(`candidateName${i}`).value;
+                candidateNames.push(name);
+            }
+
+            fetch('/api/createVoting', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ candidateNames }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        document.getElementById('candidateCount').addEventListener('input', function() {
+            const candidateCount = this.value;
+            const candidateNamesDiv = document.getElementById('candidateNames');
+            candidateNamesDiv.innerHTML = '';
+
+            for (let i = 0; i < candidateCount; i++) {
+                candidateNamesDiv.innerHTML += `<label for="candidateName${i}">Candidate ${i+1} Name:</label>`;
+                candidateNamesDiv.innerHTML += `<input type="text" id="candidateName${i}" name="candidateName${i}"><br><br>`;
+            }
+        });
+    </script>
+</body>
+</html>
