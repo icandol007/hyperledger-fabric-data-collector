@@ -9,9 +9,9 @@ import (
 )
 
 func main() {
-	voterChaincode, err := contractapi.NewChaincode(new(vote.SmartContract))
+	voteChaincode, err := contractapi.NewChaincode(new(vote.SmartContract))
 	if err != nil {
-		fmt.Printf("Error creating voter chaincode: %s", err.Error())
+		fmt.Printf("Error creating vote chaincode: %s", err.Error())
 		return
 	}
 
@@ -23,8 +23,8 @@ func main() {
 
 	fmt.Println("Starting chaincodes...")
 
-	if err := voterChaincode.Start(); err != nil {
-		fmt.Printf("Error starting voter chaincode: %s", err.Error())
+	if err := voteChaincode.Start(); err != nil {
+		fmt.Printf("Error starting vote chaincode: %s", err.Error())
 	}
 
 	if err := temperatureChaincode.Start(); err != nil {

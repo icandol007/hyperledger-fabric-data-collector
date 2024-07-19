@@ -23,7 +23,9 @@ func (s *SmartContract) CreateVoter(ctx contractapi.TransactionContextInterface,
 			Gender: gender,
 			Region: region,
 		},
-		CandidateNumber: candidateNumber,
+		Candidate: Candidate{
+			CandidateNumber: candidateNumber,
+		},
 	}
 
 	voterJSON, err := json.Marshal(voter)
@@ -79,6 +81,7 @@ func (s *SmartContract) VoteCountAscent(ctx contractapi.TransactionContextInterf
 	}
 	defer resultsIterator.Close()
 
+	// candidateNumber를 이용해서 쿼리해 해당 candidateNumber를 가진 에셋을 search
 	for resultsIterator.HasNext() {
 		queryResponse, err := resultsIterator.Next()
 		if err != nil {
