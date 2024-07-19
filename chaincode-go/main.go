@@ -2,19 +2,20 @@ package main
 
 import (
 	"fmt"
-	"smartcontract_pool/contract" // contract 패키지를 import합니다.
+	"smartcontractPool/smartcontractPool/temperature" // temperature 패키지를 import
+	"smartcontractPool/smartcontractPool/vote"        // vote 패키지를 import
 
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
 func main() {
-	voterChaincode, err := contractapi.NewChaincode(new(contract.SmartContract))
+	voterChaincode, err := contractapi.NewChaincode(new(vote.SmartContract))
 	if err != nil {
 		fmt.Printf("Error creating voter chaincode: %s", err.Error())
 		return
 	}
 
-	temperatureChaincode, err := contractapi.NewChaincode(new(contract.TemperatureSmartContract))
+	temperatureChaincode, err := contractapi.NewChaincode(new(temperature.TemperatureSmartContract))
 	if err != nil {
 		fmt.Printf("Error creating temperature chaincode: %s", err.Error())
 		return

@@ -1,11 +1,9 @@
-package contract
+package temperature
 
 import (
 	"encoding/json"
 	"fmt"
-
-	"smartcontract_pool/assets" // assets 패키지를 import
-	"smartcontract_pool/common" // common 패키지를 import
+	"smartcontractPool/smartcontractPool/common"
 
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
@@ -16,15 +14,15 @@ type TemperatureSmartContract struct {
 }
 
 // CreateTemperature 함수는 새로운 온도 데이터를 블록체인에 저장합니다.
-func (s *TemperatureSmartContract) CreateTemperature(ctx contractapi.TransactionContextInterface, id string, name string, age int, value float64, timestamp string) error {
-	temperature := assets.Temperature{
+func (s *TemperatureSmartContract) CreateTemperature(ctx contractapi.TransactionContextInterface, id string, name string, age int, temperatureValue float64, timestamp string) error {
+	temperature := Temperature{
 		CommonAttributes: common.CommonAttributes{
 			ID:   id,
 			Name: name,
 			Age:  age,
 		},
-		Value:     value,
-		Timestamp: timestamp,
+		TemperatureValue: temperatureValue,
+		Timestamp:        timestamp,
 	}
 
 	temperatureJSON, err := json.Marshal(temperature)
@@ -36,7 +34,7 @@ func (s *TemperatureSmartContract) CreateTemperature(ctx contractapi.Transaction
 }
 
 // GetTemperature 함수는 블록체인에서 온도 데이터를 조회합니다.
-func (s *TemperatureSmartContract) GetTemperature(ctx contractapi.TransactionContextInterface, id string) (*assets.Temperature, error) {
+func (s *TemperatureSmartContract) GetTemperature(ctx contractapi.TransactionContextInterface, id string) (*Temperature, error) {
 	temperatureJSON, err := ctx.GetStub().GetState(id)
 	if err != nil {
 		return nil, err
@@ -45,7 +43,7 @@ func (s *TemperatureSmartContract) GetTemperature(ctx contractapi.TransactionCon
 		return nil, fmt.Errorf("temperature data %s does not exist", id)
 	}
 
-	var temperature assets.Temperature
+	var temperature Temperature
 	err = json.Unmarshal(temperatureJSON, &temperature)
 	if err != nil {
 		return nil, err
