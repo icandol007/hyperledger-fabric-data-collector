@@ -3,7 +3,7 @@ package vote
 import (
 	"encoding/json"
 	"fmt"
-	"smartcontractPool/smartcontractPool/common"
+	"smartcontractPool/smartcontractTemplate/common"
 
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )

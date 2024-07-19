@@ -1,8 +1,6 @@
 package vote
 
-import (
-	"smartcontractPool/smartcontractPool/common"
-)
+import "smartcontractPool/smartcontractTemplate/common"
 
 // Candidater 구조체는 투표 후보자 에셋을 정의
 type Candidate struct {

@@ -1,6 +1,6 @@
 package temperature
 
-import "smartcontractPool/smartcontractPool/common"
+import "smartcontractPool/smartcontractTemplate/common"
 
 // Temperature 구조체는 온도 데이터를 정의합니다.
 type Temperature struct {
