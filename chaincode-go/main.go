@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"smartcontractPool/smartcontractPool/temperature" // temperature 패키지를 import
-	"smartcontractPool/smartcontractPool/vote"        // vote 패키지를 import
+	"smartcontractPool/smartcontractTemplate/temperature" // temperature 패키지를 import
+	"smartcontractPool/smartcontractTemplate/vote"        // vote 패키지를 import
 
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
