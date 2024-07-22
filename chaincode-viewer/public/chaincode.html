@@ -19,7 +19,12 @@
             throw new Error('Network response was not ok');
           }
           const data = await response.json();
-          document.getElementById('chaincodeContent').textContent = JSON.stringify(data, null, 2);
+          if (data.content) {
+            const content = data.content.replace(/\n/g, '<br>');
+            document.getElementById('chaincodeContent').innerHTML = content;
+          } else {
+            document.getElementById('chaincodeContent').textContent = 'Content not found in the document';
+          }
         } catch (error) {
           document.getElementById('chaincodeContent').textContent = 'Failed to load chaincode content';
         }
