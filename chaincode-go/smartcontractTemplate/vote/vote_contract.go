@@ -11,6 +11,7 @@ import (
 // SmartContract 구조체는 체인코드의 메인 구조체
 type SmartContract struct {
 	contractapi.Contract
+	common.Common
 }
 
 // CreateVoter : 새로운 투표 참여자 에셋을 블록체인에 저장
@@ -42,7 +43,9 @@ func (s *SmartContract) CreateCandidate(ctx contractapi.TransactionContextInterf
 	candidate := Candidate{
 		CandidateNumber: candidateNumber,
 		CandidateName:   candidateName,
-		VoteCount:       0,
+		CommonAttributes: common.CommonAttributes{
+			VoteCount: 0,
+		},
 	}
 
 	candidateJSON, err := json.Marshal(candidate)
@@ -73,15 +76,14 @@ func (s *SmartContract) GetVoter(ctx contractapi.TransactionContextInterface, id
 }
 
 // VoteCountAscent : 투표 데이터 제출 시 득표 변수 1증가
-func (s *SmartContract) VoteCountAscent(ctx contractapi.TransactionContextInterface, candidateNumber string) error {
-	queryString := fmt.Sprintf(`{"selector":{"candidateNumber":"%s"}}`, candidateNumber)
+func (s *SmartContract) VoteCountAscent(ctx contractapi.TransactionContextInterface, searchID string) error {
+	queryString := fmt.Sprintf(`{"selector":{"candidateNumber":"%s"}}`, searchID)
 	resultsIterator, err := ctx.GetStub().GetQueryResult(queryString)
 	if err != nil {
 		return err
 	}
 	defer resultsIterator.Close()
 
-	// candidateNumber를 이용해서 쿼리해 해당 candidateNumber를 가진 에셋을 search
 	for resultsIterator.HasNext() {
 		queryResponse, err := resultsIterator.Next()
 		if err != nil {

@@ -7,7 +7,6 @@ type Candidate struct {
 	common.CommonAttributes        // 공통 속성 ID 사용
 	CandidateNumber         string `json:"candidateNumber"`
 	CandidateName           string `json:"candidateName"`
-	VoteCount               int    `json:"VoteCount"`
 }
 
 // Voter 구조체는 투표 참여자 에셋을 정의
