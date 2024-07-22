@@ -1,47 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chaincode Template Viewer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f6f9;
-        }
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-        }
-        pre {
-            background-color: #f0f0f0;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chaincode Viewer</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Chaincode Template</h1>
-        <pre id="templateContent">Loading...</pre>
-    </div>
-    <script>
-        async function fetchTemplate() {
-            const response = await fetch('/api/chaincode-template');
-            const data = await response.json();
-            document.getElementById('templateContent').textContent = data.template;
-        }
-        fetchTemplate();
-    </script>
+  <h1>Chaincode Viewer</h1>
+  <form id="chaincodeForm">
+    <label for="chaincodeId">Enter Chaincode ID:</label>
+    <input type="text" id="chaincodeId" name="chaincodeId" required>
+    <button type="submit">View Chaincode</button>
+  </form>
+  <script>
+    document.getElementById('chaincodeForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const chaincodeId = document.getElementById('chaincodeId').value;
+      window.location.href = `/chaincode.html?id=${chaincodeId}`;
+    });
+  </script>
 </body>
 </html>
