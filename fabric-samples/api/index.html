@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 및 체인코드 배포</title>
+</head>
+<body>
+    <h1>회원가입</h1>
+    <form action="/register" method="POST">
+        <label for="username">사용자 이름:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">회원가입</button>
+    </form>
+    <h1>체인코드 배포</h1>
+    <form action="/deploy" method="POST">
+        <button type="submit">체인코드 배포</button>
+    </form>
+</body>
+</html>
