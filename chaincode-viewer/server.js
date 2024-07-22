@@ -10,7 +10,17 @@ const chaincodeDB = nano.db.use('smart_contract_pool'); // 'chaincode_db'는 Cou
 // 정적 파일 제공
 app.use(express.static('public'));
 
-// 체인코드 조회 API
+// 모든 문서의 _id 조회 API
+app.get('/api/chaincodes', async (req, res) => {
+  try {
+    const ids = await chaincodeDB.list({ include_docs: false });
+    res.json(ids.rows.map(row => row.id));
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve chaincodes from CouchDB', details: error });
+  }
+});
+
+// 특정 _id로 문서 조회 API
 app.get('/api/chaincode/:id', async (req, res) => {
   const id = req.params.id;
   try {
