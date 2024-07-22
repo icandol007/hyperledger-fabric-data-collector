@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chaincode Content</title>
+</head>
+<body>
+  <h1>Chaincode Content</h1>
+  <div id="chaincodeContent">Loading...</div>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const chaincodeId = urlParams.get('id');
+      if (chaincodeId) {
+        try {
+          const response = await fetch(`/api/chaincode/${chaincodeId}`);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          document.getElementById('chaincodeContent').textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+          document.getElementById('chaincodeContent').textContent = 'Failed to load chaincode content';
+        }
+      } else {
+        document.getElementById('chaincodeContent').textContent = 'No Chaincode ID provided';
+      }
+    });
+  </script>
+</body>
+</html>
