@@ -6,18 +6,31 @@
   <title>Chaincode Viewer</title>
 </head>
 <body>
-  <h1>Chaincode Viewer</h1>
-  <form id="chaincodeForm">
-    <label for="chaincodeId">Enter Chaincode ID:</label>
-    <input type="text" id="chaincodeId" name="chaincodeId" required>
-    <button type="submit">View Chaincode</button>
-  </form>
+  <h1>Chaincode IDs</h1>
+  <ul id="chaincodeList">Loading...</ul>
   <script>
-    document.getElementById('chaincodeForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      const chaincodeId = document.getElementById('chaincodeId').value;
-      window.location.href = `/chaincode.html?id=${chaincodeId}`;
-    });
+    async function fetchChaincodeIds() {
+      try {
+        const response = await fetch('/api/chaincodes');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const ids = await response.json();
+        const list = document.getElementById('chaincodeList');
+        list.innerHTML = '';
+        ids.forEach(id => {
+          const listItem = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `/chaincode.html?id=${id}`;
+          link.textContent = id;
+          listItem.appendChild(link);
+          list.appendChild(listItem);
+        });
+      } catch (error) {
+        document.getElementById('chaincodeList').textContent = 'Failed to load chaincode IDs';
+      }
+    }
+    fetchChaincodeIds();
   </script>
 </body>
 </html>
