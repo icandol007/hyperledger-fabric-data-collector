@@ -8,7 +8,6 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-// SmartContract 구조체는 체인코드의 메인 구조체
 type SmartContract struct {
 	contractapi.Contract
 	common.Common

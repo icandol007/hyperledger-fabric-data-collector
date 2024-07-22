@@ -8,18 +8,17 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-// TemperatureSmartContract 구조체는 온도 데이터 체인코드의 메인 구조체입니다.
 type TemperatureSmartContract struct {
 	contractapi.Contract
 }
 
 // CreateTemperature 함수는 새로운 온도 데이터를 블록체인에 저장합니다.
-func (s *TemperatureSmartContract) CreateTemperature(ctx contractapi.TransactionContextInterface, id string, name string, age int, temperatureValue float64, timestamp string) error {
+func (s *TemperatureSmartContract) CreateTemperature(ctx contractapi.TransactionContextInterface, id string, name string, region string, temperatureValue float64, timestamp string) error {
 	temperature := Temperature{
 		CommonAttributes: common.CommonAttributes{
-			ID:   id,
-			Name: name,
-			Age:  age,
+			ID:     id,
+			Name:   name,
+			Region: region,
 		},
 		TemperatureValue: temperatureValue,
 		Timestamp:        timestamp,
@@ -30,17 +29,17 @@ func (s *TemperatureSmartContract) CreateTemperature(ctx contractapi.Transaction
 		return err
 	}
 
-	return ctx.GetStub().PutState(id, temperatureJSON)
+	return ctx.GetStub().PutState(region, temperatureJSON)
 }
 
-// GetTemperature 함수는 블록체인에서 온도 데이터를 조회합니다.
-func (s *TemperatureSmartContract) GetTemperature(ctx contractapi.TransactionContextInterface, id string) (*Temperature, error) {
-	temperatureJSON, err := ctx.GetStub().GetState(id)
+// GetTemperature : 블록체인에서 온도 데이터 조회
+func (s *TemperatureSmartContract) GetTemperature(ctx contractapi.TransactionContextInterface, region string) (*Temperature, error) {
+	temperatureJSON, err := ctx.GetStub().GetState(region)
 	if err != nil {
 		return nil, err
 	}
 	if temperatureJSON == nil {
-		return nil, fmt.Errorf("temperature data %s does not exist", id)
+		return nil, fmt.Errorf("temperature data %s does not exist", region)
 	}
 
 	var temperature Temperature
