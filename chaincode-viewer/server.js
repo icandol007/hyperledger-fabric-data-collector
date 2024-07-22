@@ -1,6 +1,6 @@
 // server.js
 const express = require('express');
-const nano = require('nano')('http://localhost:5984'); // CouchDB URL
+const nano = require('nano')('http://admin:password@localhost:5984'); // CouchDB URL with credentials
 const app = express();
 const port = 3000;
 
