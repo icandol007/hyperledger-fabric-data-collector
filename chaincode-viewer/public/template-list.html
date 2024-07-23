@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f6f9;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+    }
+    a {
+      text-decoration: none;
+      color: #007bff;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Template List</h1>
+  <ul id="templateList">Loading...</ul>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const templateList = document.getElementById('templateList');
+
+      // 템플릿 목록 불러오기
+      async function loadTemplateList() {
+        try {
+          const response = await fetch('/api/templates');
+          const templates = await response.json();
+          templateList.innerHTML = '';
+          templates.forEach(template => {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = `/template-view.html?id=${template}`;
+            link.textContent = template;
+            listItem.appendChild(link);
+            templateList.appendChild(listItem);
+          });
+        } catch (error) {
+          templateList.textContent = 'Failed to load template list';
+        }
+      }
+
+      loadTemplateList();
+    });
+  </script>
+</body>
+</html>

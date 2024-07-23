@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Editor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f6f9;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    textarea {
+      width: 80%;
+      height: 300px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Template Editor</h1>
+  <textarea id="templateContent"></textarea>
+  <button onclick="saveTemplate()">Save</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const templateId = urlParams.get('id');
+      const templateContent = document.getElementById('templateContent');
+
+      // 템플릿 내용 불러오기
+      async function loadTemplateContent() {
+        try {
+          const response = await fetch(`/api/templates/${templateId}`);
+          const data = await response.json();
+          templateContent.value = data.content;
+        } catch (error) {
+          templateContent.value = 'Failed to load template content';
+        }
+      }
+
+      // 템플릿 내용 저장
+      async function saveTemplate() {
+        const content = templateContent.value;
+        try {
+          const response = await fetch(`/api/templates/${templateId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ content })
+          });
+          const result = await response.json();
+          if (response.ok) {
+            alert(result.message);
+          } else {
+            alert('Failed to save template: ' + result.error);
+          }
+        } catch (error) {
+          console.error('Failed to save template', error);
+        }
+      }
+
+      window.saveTemplate = saveTemplate;
+      loadTemplateContent();
+    });
+  </script>
+</body>
+</html>
