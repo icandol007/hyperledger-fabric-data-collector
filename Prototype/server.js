@@ -1,5 +1,4 @@
 const express = require('express');
-const mysql = require('mysql');
 const nano = require('nano')('http://admin:password@localhost:5984'); // CouchDB URL with credentials
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
