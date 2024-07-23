@@ -1,8 +1,7 @@
 const express = require('express');
+const mysql = require('mysql2');
 const nano = require('nano')('http://admin:password@localhost:5984'); // CouchDB URL with credentials
 const bodyParser = require('body-parser');
-const mysql = require('mysql2');
-const crypto = require('crypto');
 const app = express();
 const port = 3000;
 
@@ -71,28 +70,17 @@ app.post('/api/templates/:id', async (req, res) => {
   }
 });
 
-// 암호화 함수
-function encrypt(text, masterKey) {
-  const cipher = crypto.createCipher('aes-256-cbc', Buffer.from(masterKey));
-  let encrypted = cipher.update(text, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  return encrypted;
-}
 
-// 회원가입 엔드포인트
-app.post('/register', (req, res) => {
-  const { username, password, name, secretKey, publicKey } = req.body;
-
-  // CA 키를 하나로 합쳐서 암호화
-  const combinedKeys = JSON.stringify({ secretKey, publicKey });
-  const masterKey = crypto.randomBytes(32); // 마스터 키 생성 (예시)
-  const encryptedKeys = encrypt(combinedKeys, masterKey);
-
-  // 사용자 정보와 암호화된 키를 MySQL에 저장
-  const query = `INSERT INTO users (username, password, name, keys) VALUES (?, ?, ?, ?)`;
-  db.query(query, [username, password, name, encryptedKeys], (err, result) => {
-    if (err) return res.status(500).send('Error registering user');
-    res.status(200).send('User registered successfully');
+// 회원가입 API
+app.post('/api/register', (req, res) => {
+  const { id, password, username, name } = req.body;
+  const query = 'INSERT INTO users (id, password, username, name) VALUES (?, ?, ?, ?)';
+  db.query(query, [id, password, username, name], (err, result) => {
+    if (err) {
+      res.status(500).json({ error: 'Failed to register user', details: err });
+      return;
+    }
+    res.json({ message: 'User registered successfully', result });
   });
 });
 
