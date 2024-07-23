@@ -72,6 +72,7 @@
           const result = await response.json();
           if (response.ok) {
             alert(result.message);
+            window.location.href = '/template-list.html'; // 저장 성공 시 템플릿 리스트로 이동
           } else {
             alert('Failed to save template: ' + result.error);
           }
