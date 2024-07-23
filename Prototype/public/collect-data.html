@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>데이터 수집하기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f6f9;
+    }
+    .container {
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 600px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    input, textarea {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+      margin: 5px 0;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .hidden {
+      display: none;
+    }
+    .input-group {
+      margin: 10px 0;
+    }
+    label {
+      text-align: left;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>데이터 수집하기</h1>
+    <div id="choices">
+      <button onclick="showForm('vote')">투표 데이터 수집하기</button>
+      <button onclick="showForm('temperature')">지역별 온도 데이터 수집하기</button>
+      <button onclick="showForm('survey')">설문 데이터 수집하기</button>
+    </div>
+
+    <div id="voteForm" class="hidden">
+      <h2>투표 데이터 수집하기</h2>
+      <form id="voteDataForm">
+        <input type="number" id="numCandidates" placeholder="후보자 수 입력" required>
+        <div id="candidatesContainer"></div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <div id="temperatureForm" class="hidden">
+      <h2>지역별 온도 데이터 수집하기</h2>
+      <form id="temperatureDataForm">
+        <input type="number" id="numRegions" placeholder="지역 수 입력" required>
+        <div id="regionsContainer"></div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <div id="surveyForm" class="hidden">
+      <h2>설문 데이터 수집하기</h2>
+      <form id="surveyDataForm">
+        <input type="number" id="numQuestions" placeholder="질문 수 입력" required>
+        <div id="questionsContainer"></div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function showForm(type) {
+      document.getElementById('choices').classList.add('hidden');
+      document.getElementById('voteForm').classList.add('hidden');
+      document.getElementById('temperatureForm').classList.add('hidden');
+      document.getElementById('surveyForm').classList.add('hidden');
+      
+      if (type === 'vote') {
+        document.getElementById('voteForm').classList.remove('hidden');
+      } else if (type === 'temperature') {
+        document.getElementById('temperatureForm').classList.remove('hidden');
+      } else if (type === 'survey') {
+        document.getElementById('surveyForm').classList.remove('hidden');
+      }
+    }
+
+    document.getElementById('numCandidates').addEventListener('input', function() {
+      const numCandidates = this.value;
+      const container = document.getElementById('candidatesContainer');
+      container.innerHTML = '';
+      for (let i = 1; i <= numCandidates; i++) {
+        const div = document.createElement('div');
+        div.className = 'input-group';
+        div.innerHTML = `
+          <label>후보자 ${i}</label>
+          <input type="number" name="candidates[${i}][symbolNumber]" placeholder="기호번호" required>
+          <input type="text" name="candidates[${i}][name]" placeholder="후보자명" required>
+        `;
+        container.appendChild(div);
+      }
+    });
+
+    document.getElementById('numRegions').addEventListener('input', function() {
+      const numRegions = this.value;
+      const container = document.getElementById('regionsContainer');
+      container.innerHTML = '';
+      for (let i = 1; i <= numRegions; i++) {
+        const div = document.createElement('div');
+        div.className = 'input-group';
+        div.innerHTML = `
+          <label>지역 ${i}</label>
+          <input type="text" name="regions[${i}][region]" placeholder="지역명" required>
+        `;
+        container.appendChild(div);
+      }
+    });
+
+    document.getElementById('numQuestions').addEventListener('input', function() {
+      const numQuestions = this.value;
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = '';
+      for (let i = 1; i <= numQuestions; i++) {
+        const div = document.createElement('div');
+        div.className = 'input-group';
+        div.innerHTML = `
+          <label>질문 ${i}</label>
+          <input type="number" name="questions[${i}][questionNumber]" placeholder="질문번호" required>
+          <input type="text" name="questions[${i}][content]" placeholder="질문내용" required>
+        `;
+        container.appendChild(div);
+      }
+    });
+
+    document.getElementById('voteDataForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      const response = await fetch('/api/collect-vote-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert('Vote data collected successfully');
+      } else {
+        alert('Failed to collect vote data: ' + result.error);
+      }
+    });
+
+    document.getElementById('temperatureDataForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      const response = await fetch('/api/collect-temperature-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert('Temperature data collected successfully');
+      } else {
+        alert('Failed to collect temperature data: ' + result.error);
+      }
+    });
+
+    document.getElementById('surveyDataForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      const response = await fetch('/api/collect-survey-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert('Survey data collected successfully');
+      } else {
+        alert('Failed to collect survey data: ' + result.error);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -51,6 +51,8 @@
     <button id="loginBtn" onclick="window.location.href='/login.html'">로그인</button>
     <button id="templateListBtn" class="hidden" onclick="window.location.href='/template-list.html'">템플릿 리스트</button>
     <button id="logoutBtn" class="hidden" onclick="logout()">로그아웃</button>
+    <button id="collectDataBtn" class="hidden" onclick="window.location.href='/collect-data.html'">데이터 수집하기</button>
+    <button id="participateDataCollectionBtn" class="hidden" onclick="window.location.href='/participate-data-collection.html'">데이터 수집에 참여하기</button>
     <div id="userInfo" class="hidden"></div>
   </div>
 
@@ -63,19 +65,23 @@
         if (data.loggedIn) {
           document.getElementById('loginBtn').classList.add('hidden');
           document.getElementById('registerBtn').classList.add('hidden');
-          document.getElementById('templateListBtn').classList.remove('hidden');
           document.getElementById('logoutBtn').classList.remove('hidden');
           document.getElementById('userInfo').textContent = `Logged in as ${data.id}`;
           document.getElementById('userInfo').classList.remove('hidden');
 
-          if (!data.isAdmin) {
-            document.getElementById('templateListBtn').classList.add('hidden');
+          if (data.isAdmin) {
+            document.getElementById('templateListBtn').classList.remove('hidden');
+          } else {
+            document.getElementById('collectDataBtn').classList.remove('hidden');
+            document.getElementById('participateDataCollectionBtn').classList.remove('hidden');
           }
         } else {
           document.getElementById('loginBtn').classList.remove('hidden');
           document.getElementById('registerBtn').classList.remove('hidden');
           document.getElementById('templateListBtn').classList.add('hidden');
           document.getElementById('logoutBtn').classList.add('hidden');
+          document.getElementById('collectDataBtn').classList.add('hidden');
+          document.getElementById('participateDataCollectionBtn').classList.add('hidden');
           document.getElementById('userInfo').classList.add('hidden');
         }
       } catch (error) {

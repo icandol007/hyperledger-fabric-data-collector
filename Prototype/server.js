@@ -111,6 +111,98 @@ app.get('/api/me', (req, res) => {
   }
 });
 
+// ---------------------------로그인 관련--------------------------------------
+
+// 투표 데이터 수집 API
+app.post('/api/collect-vote-data', (req, res) => {
+  const { candidates } = req.body;
+  const candidateEntries = Object.values(candidates);
+
+  const query = 'INSERT INTO vote_data (symbolNumber, name) VALUES ?';
+  const values = candidateEntries.map(candidate => [candidate.symbolNumber, candidate.name]);
+
+  db.query(query, [values], (err, result) => {
+    if (err) {
+      console.error('Error collecting vote data:', err);
+      res.status(500).json({ error: 'Failed to collect vote data', details: err });
+      return;
+    }
+    res.json({ message: 'Vote data collected successfully', result });
+  });
+});
+
+// 지역별 온도 데이터 수집 API
+app.post('/api/collect-temperature-data', (req, res) => {
+  const { regions } = req.body;
+  const regionEntries = Object.values(regions);
+
+  const query = 'INSERT INTO temperature_data (region) VALUES ?';
+  const values = regionEntries.map(region => [region.region]);
+
+  db.query(query, [values], (err, result) => {
+    if (err) {
+      console.error('Error collecting temperature data:', err);
+      res.status(500).json({ error: 'Failed to collect temperature data', details: err });
+      return;
+    }
+    res.json({ message: 'Temperature data collected successfully', result });
+  });
+});
+
+// 설문 데이터 수집 API
+app.post('/api/collect-survey-data', (req, res) => {
+  const { questions } = req.body;
+  const questionEntries = Object.values(questions);
+
+  const query = 'INSERT INTO survey_data (questionNumber, content) VALUES ?';
+  const values = questionEntries.map(question => [question.questionNumber, question.content]);
+
+  db.query(query, [values], (err, result) => {
+    if (err) {
+      console.error('Error collecting survey data:', err);
+      res.status(500).json({ error: 'Failed to collect survey data', details: err });
+      return;
+    }
+    res.json({ message: 'Survey data collected successfully', result });
+  });
+});
+
+
+// 데이터 수집 API
+app.post('/api/collect-data', (req, res) => {
+  const { data } = req.body;
+  
+  // 데이터베이스에 데이터를 저장하는 로직을 추가하세요.
+  // 예를 들어, MySQL에 데이터를 저장할 수 있습니다.
+  const query = 'INSERT INTO collected_data (data) VALUES (?)';
+  db.query(query, [data], (err, result) => {
+    if (err) {
+      console.error('Error collecting data:', err);
+      res.status(500).json({ error: 'Failed to collect data', details: err });
+      return;
+    }
+    res.json({ message: 'Data collected successfully', result });
+  });
+});
+
+// 데이터 수집 참여 API
+app.post('/api/participate-data-collection', (req, res) => {
+  const { feedback } = req.body;
+  
+  // 데이터베이스에 피드백을 저장하는 로직을 추가하세요.
+  // 예를 들어, MySQL에 피드백을 저장할 수 있습니다.
+  const query = 'INSERT INTO feedback (feedback) VALUES (?)';
+  db.query(query, [feedback], (err, result) => {
+    if (err) {
+      console.error('Error submitting feedback:', err);
+      res.status(500).json({ error: 'Failed to submit feedback', details: err });
+      return;
+    }
+    res.json({ message: 'Feedback submitted successfully', result });
+  });
+});
+
+
 // 관리자 인증 미들웨어
 function adminAuth(req, res, next) {
   if (req.session.user && req.session.user.is_admin) {
