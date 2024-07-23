@@ -38,6 +38,7 @@ USE userinfo;
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     password VARCHAR(255) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(100) NOT NULL,
     CAkey VARCHAR(512) NOT NULL
 );
