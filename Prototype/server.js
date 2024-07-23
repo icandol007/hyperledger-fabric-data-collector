@@ -13,7 +13,8 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'password',
-  database: 'userinfo'
+  database: 'userinfo',
+  port: 3306
 });
 
 db.connect(err => {
@@ -33,7 +34,6 @@ app.get('/', (req, res) => {
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 // 모든 문서의 _id 조회 API
 app.get('/api/templates', async (req, res) => {
