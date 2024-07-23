@@ -45,6 +45,21 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// 회원가입 API
+app.post('/api/register', async (req, res) => {
+  const { id, password, username, name } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10); // 비밀번호 해싱
+  const query = 'INSERT INTO users (id, password, username, name) VALUES (?, ?, ?, ?)';
+  db.query(query, [id, hashedPassword, username, name], (err, result) => {
+    if (err) {
+      console.error('Error during user registration:', err);
+      res.status(500).json({ error: 'Failed to register user', details: err });
+      return;
+    }
+    res.json({ message: 'User registered successfully', result });
+  });
+});
+
 // 로그인 API
 app.post('/api/login', (req, res) => {
   const { id, password } = req.body;
@@ -137,21 +152,6 @@ app.post('/api/templates/:id', adminAuth, async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to update template in CouchDB', details: error });
   }
-});
-
-// 회원가입 API
-app.post('/api/register', async (req, res) => {
-  const { id, password, username, name } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10); // 비밀번호 해싱
-  const query = 'INSERT INTO users (id, password, username, name) VALUES (?, ?, ?, ?)';
-  db.query(query, [id, hashedPassword, username, name], (err, result) => {
-    if (err) {
-      console.error('Error during user registration:', err);
-      res.status(500).json({ error: 'Failed to register user', details: err });
-      return;
-    }
-    res.json({ message: 'User registered successfully', result });
-  });
 });
 
 // 서버 시작
