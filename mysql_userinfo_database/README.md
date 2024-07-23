@@ -40,7 +40,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(100) NOT NULL,
-    CAkey VARCHAR(512) NOT NULL
+    CAkey VARCHAR(512) // CA 두 개의 키를 하나로 encryption시켜 저장할 column
 );
 ``````
 
