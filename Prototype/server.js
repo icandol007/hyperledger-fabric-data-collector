@@ -73,16 +73,19 @@ app.post('/api/templates/:id', async (req, res) => {
 
 // 회원가입 API
 app.post('/api/register', (req, res) => {
+  // fabric-sdk 사용해서 fabric-CA 받아와 두개의 키를 crypto 함수 이용해 하나의 cypher-text로 만들어 밑의 req.body로 함께 묶어 users 테이블에 추가 예정
   const { id, password, username, name } = req.body;
   const query = 'INSERT INTO users (id, password, username, name) VALUES (?, ?, ?, ?)';
   db.query(query, [id, password, username, name], (err, result) => {
     if (err) {
+      console.error('Error during user registration:', err);  // 오류 로그 출력
       res.status(500).json({ error: 'Failed to register user', details: err });
       return;
     }
     res.json({ message: 'User registered successfully', result });
   });
 });
+
 
 // 서버 시작
 app.listen(port, () => {
