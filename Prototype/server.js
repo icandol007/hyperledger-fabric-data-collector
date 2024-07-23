@@ -24,15 +24,16 @@ db.connect(err => {
   console.log('Connected to MySQL');
 });
 
+// 루트 경로에 대한 요청을 main.html로 리디렉션
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/main.html');
+});
+
 // 정적 파일 제공
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 루트 경로에 대한 요청을 main.html로 리디렉션
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/main.html');
-});
 
 // 모든 문서의 _id 조회 API
 app.get('/api/templates', async (req, res) => {
