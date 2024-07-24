@@ -6,6 +6,14 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const app = express();
 const port = 3000;
+const { Wallets, Gateway } = require('fabric-network');
+const fs = require('fs');
+const path = require('path');
+
+// Fabric Network 연결 Configuration
+const ccpPath = path.resolve(__dirname, 'connection-profile.json'); // 연결 프로파일 파일의 경로
+const walletPath = path.join(process.cwd(), 'wallet'); // 지갑 경로
+
 
 // CouchDB 데이터베이스 선택
 const chaincodeDB = nano.db.use('smart_contract_pool'); // 'chaincode_db'는 CouchDB 데이터베이스 이름
@@ -214,6 +222,7 @@ function adminAuth(req, res, next) {
   }
   res.status(403).json({ error: 'Access denied' });
 }
+
 
 // 모든 문서의 _id 조회 API
 app.get('/api/templates', adminAuth, async (req, res) => {

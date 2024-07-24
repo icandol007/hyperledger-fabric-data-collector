@@ -1,0 +1,45 @@
+{
+    "name": "network",
+    "version": "1.0",
+    "client": {
+      "organization": "Org1",
+      "connection": {
+        "timeout": {
+          "peer": "300",
+          "orderer": "300"
+        }
+      }
+    },
+    "organizations": {
+      "Org1": {
+        "mspid": "Org1MSP",
+        "peers": {
+          "peer1": {
+            "url": "grpc://localhost:7051"
+          }
+        },
+        "certificateAuthorities": {
+          "ca.org1.example.com": {
+            "url": "http://localhost:7054"
+          }
+        }
+      }
+    },
+    "peers": {
+      "peer1": {
+        "url": "grpc://localhost:7051",
+        "tlsCACerts": {
+          "path": "/path/to/tls/ca.crt"
+        }
+      }
+    },
+    "orderers": {
+      "orderer.example.com": {
+        "url": "grpc://localhost:7050",
+        "tlsCACerts": {
+          "path": "/path/to/tls/ca.crt"
+        }
+      }
+    }
+  }
+  

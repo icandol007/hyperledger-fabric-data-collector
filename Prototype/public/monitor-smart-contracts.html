@@ -21,7 +21,7 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       width: 80%;
-      max-width: 600px;
+      max-width: 800px;
     }
     h1 {
       margin-bottom: 20px;
@@ -32,6 +32,11 @@
     }
     li {
       margin: 10px 0;
+      cursor: pointer;
+    }
+    li:hover {
+      background-color: #e0e0e0;
+      border-radius: 4px;
     }
     button {
       padding: 10px 20px;
@@ -49,50 +54,64 @@
     .hidden {
       display: none;
     }
+    .details {
+      text-align: left;
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>스마트 컨트랙트 모니터링</h1>
     <div id="contractList">
+      <h2>스마트 컨트랙트 목록</h2>
       <ul id="contracts"></ul>
     </div>
     <div id="transactionLogs" class="hidden">
       <h2>트랜잭션 로그</h2>
-      <ul id="logs"></ul>
+      <pre id="logs" class="details"></pre>
     </div>
     <button onclick="window.location.href='/'">메인 페이지로 돌아가기</button>
   </div>
   <script>
+    // 스마트 컨트랙트 목록을 가져오는 함수
     async function fetchContracts() {
-      const response = await fetch('/api/contracts');
-      const contracts = await response.json();
-
-      const contractsList = document.getElementById('contracts');
-      contractsList.innerHTML = '';
-      contracts.forEach(contract => {
-        const li = document.createElement('li');
-        li.textContent = contract;
-        li.onclick = () => fetchLogs(contract);
-        contractsList.appendChild(li);
-      });
+      try {
+        const response = await fetch('/api/monitor-smart-contracts');
+        const data = await response.json();
+        
+        const contractsList = document.getElementById('contracts');
+        contractsList.innerHTML = '';
+        data.chaincodes.forEach(chaincode => {
+          if (chaincode.trim()) {
+            const li = document.createElement('li');
+            li.textContent = chaincode;
+            li.onclick = () => fetchChaincodeDetails(chaincode.trim());
+            contractsList.appendChild(li);
+          }
+        });
+      } catch (error) {
+        console.error('Failed to fetch contracts:', error);
+      }
     }
 
-    async function fetchLogs(contractName) {
-      const response = await fetch(`/api/contracts/${contractName}/logs`);
-      const logs = await response.json();
+    // 클릭한 스마트 컨트랙트의 로그를 가져오는 함수
+    async function fetchChaincodeDetails(chaincodeID) {
+      try {
+        const response = await fetch(`/api/contracts/${chaincodeID}/logs`);
+        const data = await response.json();
+        
+        const details = document.getElementById('logs');
+        details.textContent = data.logs.join('\n');
 
-      const logsList = document.getElementById('logs');
-      logsList.innerHTML = '';
-      logs.forEach(log => {
-        const li = document.createElement('li');
-        li.textContent = log;
-        logsList.appendChild(li);
-      });
-
-      document.getElementById('transactionLogs').classList.remove('hidden');
+        document.getElementById('transactionLogs').classList.remove('hidden');
+      } catch (error) {
+        console.error('Failed to fetch chaincode details:', error);
+      }
     }
 
+    // 페이지 로드 시 스마트 컨트랙트 목록을 가져옴
     window.onload = fetchContracts;
   </script>
 </body>
