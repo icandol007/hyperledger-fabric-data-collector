@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스마트 컨트랙트 모니터링</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f6f9;
+    }
+    .container {
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 600px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+      margin: 5px 0;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>스마트 컨트랙트 모니터링</h1>
+    <div id="contractList">
+      <ul id="contracts"></ul>
+    </div>
+    <div id="transactionLogs" class="hidden">
+      <h2>트랜잭션 로그</h2>
+      <ul id="logs"></ul>
+    </div>
+    <button onclick="window.location.href='/'">메인 페이지로 돌아가기</button>
+  </div>
+  <script>
+    async function fetchContracts() {
+      const response = await fetch('/api/contracts');
+      const contracts = await response.json();
+
+      const contractsList = document.getElementById('contracts');
+      contractsList.innerHTML = '';
+      contracts.forEach(contract => {
+        const li = document.createElement('li');
+        li.textContent = contract;
+        li.onclick = () => fetchLogs(contract);
+        contractsList.appendChild(li);
+      });
+    }
+
+    async function fetchLogs(contractName) {
+      const response = await fetch(`/api/contracts/${contractName}/logs`);
+      const logs = await response.json();
+
+      const logsList = document.getElementById('logs');
+      logsList.innerHTML = '';
+      logs.forEach(log => {
+        const li = document.createElement('li');
+        li.textContent = log;
+        logsList.appendChild(li);
+      });
+
+      document.getElementById('transactionLogs').classList.remove('hidden');
+    }
+
+    window.onload = fetchContracts;
+  </script>
+</body>
+</html>

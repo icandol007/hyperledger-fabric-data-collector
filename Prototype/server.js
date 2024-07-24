@@ -45,6 +45,8 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// ---------------------------로그인 관련--------------------------------------
+
 // 회원가입 API
 app.post('/api/register', async (req, res) => {
   const { id, password, username, name } = req.body;
@@ -112,6 +114,7 @@ app.get('/api/me', (req, res) => {
 });
 
 // ---------------------------로그인 관련--------------------------------------
+// ---------------------------데이터 수집 관련----------------------------------
 
 // 투표 데이터 수집 API
 app.post('/api/collect-vote-data', (req, res) => {
@@ -202,6 +205,7 @@ app.post('/api/participate-data-collection', (req, res) => {
   });
 });
 
+// ---------------------------데이터 수집 관련----------------------------------
 
 // 관리자 인증 미들웨어
 function adminAuth(req, res, next) {
