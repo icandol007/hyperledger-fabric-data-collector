@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const app = express();
-const port = 3000;
+const port = 3001;
 const { Wallets, Gateway } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
@@ -223,6 +223,7 @@ function adminAuth(req, res, next) {
   res.status(403).json({ error: 'Access denied' });
 }
 
+// 스마트 컨트랙트 모니터링 구현 진짜 벽인데
 
 // 모든 문서의 _id 조회 API
 app.get('/api/templates', adminAuth, async (req, res) => {
