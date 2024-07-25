@@ -1,118 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>스마트 컨트랙트 모니터링</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f4f6f9;
-    }
-    .container {
-      text-align: center;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 80%;
-      max-width: 800px;
-    }
-    h1 {
-      margin-bottom: 20px;
-    }
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    li {
-      margin: 10px 0;
-      cursor: pointer;
-    }
-    li:hover {
-      background-color: #e0e0e0;
-      border-radius: 4px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      border-radius: 4px;
-      background-color: #007bff;
-      color: white;
-      margin: 5px 0;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .hidden {
-      display: none;
-    }
-    .details {
-      text-align: left;
-      margin-top: 20px;
-      white-space: pre-wrap;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Smart Contracts</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #log-container { white-space: pre-wrap; }
+        .log-entry { margin-bottom: 10px; }
+        .filtered { color: red; }
+        #loading-message { font-weight: bold; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>스마트 컨트랙트 모니터링</h1>
-    <div id="contractList">
-      <h2>스마트 컨트랙트 목록</h2>
-      <ul id="contracts"></ul>
-    </div>
-    <div id="transactionLogs" class="hidden">
-      <h2>트랜잭션 로그</h2>
-      <pre id="logs" class="details"></pre>
-    </div>
-    <button onclick="window.location.href='/'">메인 페이지로 돌아가기</button>
-  </div>
-  <script>
-    // 스마트 컨트랙트 목록을 가져오는 함수
-    async function fetchContracts() {
-      try {
-        const response = await fetch('/api/monitor-smart-contracts');
-        const data = await response.json();
-        
-        const contractsList = document.getElementById('contracts');
-        contractsList.innerHTML = '';
-        data.chaincodes.forEach(chaincode => {
-          if (chaincode.trim()) {
-            const li = document.createElement('li');
-            li.textContent = chaincode;
-            li.onclick = () => fetchChaincodeDetails(chaincode.trim());
-            contractsList.appendChild(li);
-          }
-        });
-      } catch (error) {
-        console.error('Failed to fetch contracts:', error);
-      }
-    }
+    <h1>Smart Contract Logs</h1>
+    <div id="loading-message">Loading...</div>
+    <div id="log-container"></div>
 
-    // 클릭한 스마트 컨트랙트의 로그를 가져오는 함수
-    async function fetchChaincodeDetails(chaincodeID) {
-      try {
-        const response = await fetch(`/api/contracts/${chaincodeID}/logs`);
-        const data = await response.json();
-        
-        const details = document.getElementById('logs');
-        details.textContent = data.logs.join('\n');
+    <script>
+        async function fetchLogs() {
+            const loadingMessage = document.getElementById('loading-message');
+            const logContainer = document.getElementById('log-container');
 
-        document.getElementById('transactionLogs').classList.remove('hidden');
-      } catch (error) {
-        console.error('Failed to fetch chaincode details:', error);
-      }
-    }
+            try {
+                // Show loading message
+                loadingMessage.style.display = 'block';
 
-    // 페이지 로드 시 스마트 컨트랙트 목록을 가져옴
-    window.onload = fetchContracts;
-  </script>
+                // Fetch logs from the server
+                const response = await fetch('/api/monitor-smart-contracts');
+                const logs = await response.json();
+
+                // Clear previous logs
+                logContainer.innerHTML = '';
+
+                // Process and display logs
+                logs.forEach(log => {
+                    if (log.message.includes('Chaincode') || log.message.includes('DeploySysCC')) {
+                        const logEntry = document.createElement('div');
+                        logEntry.classList.add('log-entry', 'filtered');
+                        logEntry.textContent = log.message;
+                        logContainer.appendChild(logEntry);
+                    }
+                });
+            } catch (error) {
+                console.error('로그를 가져오는 중 오류 발생:', error);
+                logContainer.innerHTML = '<p style="color: red;">로그를 가져오는 중 오류가 발생했습니다.</p>';
+            } finally {
+                // Hide loading message
+                loadingMessage.style.display = 'none';
+            }
+        }
+
+        // Fetch logs when the page loads
+        fetchLogs();
+    </script>
 </body>
 </html>

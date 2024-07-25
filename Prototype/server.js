@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const app = express();
+const { exec } = require('child_process');
 const port = 3001;
 const { Wallets, Gateway } = require('fabric-network');
 const fs = require('fs');
@@ -224,6 +225,26 @@ function adminAuth(req, res, next) {
 }
 
 // 스마트 컨트랙트 모니터링 구현 진짜 벽인데
+app.get('/api/monitor-smart-contracts', (req, res) => {
+  const command = 'docker logs peer0.org1.example.com';
+
+  exec(command, (err, stdout, stderr) => {
+    if (err) {
+      console.error('명령어 실행 중 오류 발생:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (stderr) {
+      console.error('표준 오류:', stderr);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    // 로그를 JSON 형식으로 변환
+    const logs = stdout.split('\n').map(line => ({ message: line }));
+
+    res.json(logs);
+  });
+});
 
 // 모든 문서의 _id 조회 API
 app.get('/api/templates', adminAuth, async (req, res) => {
@@ -257,6 +278,38 @@ app.post('/api/templates/:id', adminAuth, async (req, res) => {
     res.json({ message: 'Template updated successfully', response });
   } catch (error) {
     res.status(500).json({ error: 'Failed to update template in CouchDB', details: error });
+  }
+});
+
+// 스마트 컨트랙트 배포 API
+app.post('/api/deploy-smart-contract', adminAuth, async (req, res) => {
+  const { templateId } = req.body;
+
+  try {
+    const template = await chaincodeDB.get(templateId);
+
+    // 스마트 컨트랙트 배포 로직을 구현
+    // Fabric 네트워크를 통해 실제 배포를 수행
+
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+    const gateway = new Gateway();
+
+    await gateway.connect(ccpPath, {
+      wallet,
+      identity: 'admin',
+      discovery: { enabled: true, asLocalhost: true }
+    });
+
+    const network = await gateway.getNetwork('mychannel');
+    const contract = network.getContract('mychaincode');
+
+    await contract.submitTransaction('deployContract', templateId, JSON.stringify(template));
+
+    await gateway.disconnect();
+
+    res.json({ message: 'Smart contract deployed successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to deploy smart contract', details: error });
   }
 });
 

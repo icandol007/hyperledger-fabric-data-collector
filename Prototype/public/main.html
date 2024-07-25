@@ -74,6 +74,7 @@
     <button id="participateDataCollectionBtn" class="hidden" onclick="window.location.href='/participate-data-collection.html'">데이터 수집에 참여하기</button>
     <button id="templateListBtn" class="hidden" onclick="window.location.href='/template-list.html'">스마트 컨트랙트 템플릿 리스트</button>
     <button id="monitorSmartContractsBtn" class="hidden" onclick="window.location.href='/monitor-smart-contracts.html'">스마트 컨트랙트 모니터링</button>
+    <button id="deploySmartContractBtn" class="hidden" onclick="window.location.href='/deploy-smart-contract.html'">스마트 컨트랙트 배포</button>
   </div>
 
   <script>
@@ -92,6 +93,7 @@
           if (data.isAdmin) {
             document.getElementById('templateListBtn').classList.remove('hidden');
             document.getElementById('monitorSmartContractsBtn').classList.remove('hidden');
+            document.getElementById('deploySmartContractBtn').classList.remove('hidden');
           } else {
             document.getElementById('collectDataBtn').classList.remove('hidden');
             document.getElementById('participateDataCollectionBtn').classList.remove('hidden');
@@ -104,6 +106,7 @@
           document.getElementById('collectDataBtn').classList.add('hidden');
           document.getElementById('participateDataCollectionBtn').classList.add('hidden');
           document.getElementById('monitorSmartContractsBtn').classList.add('hidden');
+          document.getElementById('deploySmartContractBtn').classList.add('hidden');
           document.getElementById('userInfo').classList.add('hidden');
         }
       } catch (error) {
