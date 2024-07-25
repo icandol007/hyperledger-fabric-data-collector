@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"smartcontractPool/smartcontractTemplate/survey"      // survey 패키지를 import
 	"smartcontractPool/smartcontractTemplate/temperature" // temperature 패키지를 import
 	"smartcontractPool/smartcontractTemplate/vote"        // vote 패키지를 import
 
@@ -9,7 +10,7 @@ import (
 )
 
 func main() {
-	voteChaincode, err := contractapi.NewChaincode(new(vote.SmartContract))
+	voteChaincode, err := contractapi.NewChaincode(new(vote.VoteSmartContract))
 	if err != nil {
 		fmt.Printf("Error creating vote chaincode: %s", err.Error())
 		return
@@ -21,6 +22,12 @@ func main() {
 		return
 	}
 
+	surveyChaincode, err := contractapi.NewChaincode(new(survey.SurveySmartContract))
+	if err != nil {
+		fmt.Printf("Error creating survey chaincode: %s", err.Error())
+		return
+	}
+
 	fmt.Println("Starting chaincodes...")
 
 	if err := voteChaincode.Start(); err != nil {
@@ -29,5 +36,9 @@ func main() {
 
 	if err := temperatureChaincode.Start(); err != nil {
 		fmt.Printf("Error starting temperature chaincode: %s", err.Error())
+	}
+
+	if err := surveyChaincode.Start(); err != nil {
+		fmt.Printf("Error starting survey chaincode: %s", err.Error())
 	}
 }

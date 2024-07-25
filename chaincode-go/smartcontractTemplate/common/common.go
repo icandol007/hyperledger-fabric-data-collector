@@ -13,5 +13,5 @@ type CommonAttributes struct {
 }
 
 type Common interface {
-	VoteCountAscent(ctx contractapi.TransactionContextInterface, searchID string) error
+	VoteCountAscent(ctx contractapi.TransactionContextInterface, search_ID string) error
 }

@@ -8,13 +8,13 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-type SmartContract struct {
+type SurveySmartContract struct {
 	contractapi.Contract
 	common.Common
 }
 
 // CreateSurveyItem : 새로운 설문조사 항목 에셋을 블록체인에 저장
-func (s *SmartContract) CreateSurveyItem(ctx contractapi.TransactionContextInterface, surveyQuestionNumber string, surveyQuestionContent string) error {
+func (s *SurveySmartContract) CreateSurveyItem(ctx contractapi.TransactionContextInterface, surveyQuestionNumber string, surveyQuestionContent string) error {
 	surveyItem := SurveyItems{
 		SurveyQuestionNumber:  surveyQuestionNumber,
 		SurveyQuestionContent: surveyQuestionContent,
@@ -34,7 +34,7 @@ func (s *SmartContract) CreateSurveyItem(ctx contractapi.TransactionContextInter
 }
 
 // CreateSurveyParticipant : 새로운 설문조사 참여자 에셋을 블록체인에 저장
-func (s *SmartContract) CreateSurveyParticipant(ctx contractapi.TransactionContextInterface, id string, name string, age int, region string, gender string, surveyQuestionNumber string, surveyAnswer string) error {
+func (s *SurveySmartContract) CreateSurveyParticipant(ctx contractapi.TransactionContextInterface, id string, name string, age int, region string, gender string, surveyQuestionNumber string, surveyAnswer string) error {
 	surveyItem := SurveyItems{
 		SurveyQuestionNumber: surveyQuestionNumber,
 		SurveyAnswer:         surveyAnswer,
@@ -62,7 +62,7 @@ func (s *SmartContract) CreateSurveyParticipant(ctx contractapi.TransactionConte
 }
 
 // GetSurveyItem : 블록체인에서 설문조사 항목 에셋을 조회
-func (s *SmartContract) GetSurveyItem(ctx contractapi.TransactionContextInterface, surveyQuestionNumber string) (*SurveyItems, error) {
+func (s *SurveySmartContract) GetSurveyItem(ctx contractapi.TransactionContextInterface, surveyQuestionNumber string) (*SurveyItems, error) {
 	surveyItemJSON, err := ctx.GetStub().GetState(surveyQuestionNumber)
 	if err != nil {
 		return nil, err
@@ -80,44 +80,44 @@ func (s *SmartContract) GetSurveyItem(ctx contractapi.TransactionContextInterfac
 	return &surveyItem, nil
 }
 
-// GetSurveyParticipant : 블록체인에서 설문조사 참여자 에셋을 조회
-func (s *SmartContract) GetSurveyParticipant(ctx contractapi.TransactionContextInterface, id string) (*SurveyParticipant, error) {
-	participantJSON, err := ctx.GetStub().GetState(id)
-	if err != nil {
-		return nil, err
-	}
-	if participantJSON == nil {
-		return nil, fmt.Errorf("survey participant %s does not exist", id)
-	}
+// // GetSurveyParticipant : 블록체인에서 설문조사 참여자 에셋을 조회
+// func (s *SurveySmartContract) GetSurveyParticipant(ctx contractapi.TransactionContextInterface, id string) (*SurveyParticipant, error) {
+// 	participantJSON, err := ctx.GetStub().GetState(id)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if participantJSON == nil {
+// 		return nil, fmt.Errorf("survey participant %s does not exist", id)
+// 	}
 
-	var participant SurveyParticipant
-	err = json.Unmarshal(participantJSON, &participant)
-	if err != nil {
-		return nil, err
-	}
+// 	var participant SurveyParticipant
+// 	err = json.Unmarshal(participantJSON, &participant)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	return &participant, nil
-}
+// 	return &participant, nil
+// }
 
-// UpdateAnswerSurvey : 설문조사 항목에 답변을 업데이트
-func (s *SmartContract) UpdateAnswerSurvey(ctx contractapi.TransactionContextInterface, id string, surveyAnswer string) error {
-	participant, err := s.GetSurveyParticipant(ctx, id)
-	if err != nil {
-		return err
-	}
+// // UpdateAnswerSurvey : 설문조사 항목에 답변을 업데이트
+// func (s *SurveySmartContract) UpdateAnswerSurvey(ctx contractapi.TransactionContextInterface, id string, surveyAnswer string) error {
+// 	participant, err := s.GetSurveyParticipant(ctx, id)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	participant.SurveyAnswer = surveyAnswer
+// 	participant.SurveyAnswer = surveyAnswer
 
-	participantJSON, err := json.Marshal(participant)
-	if err != nil {
-		return err
-	}
+// 	participantJSON, err := json.Marshal(participant)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	return ctx.GetStub().PutState(id, participantJSON)
-}
+// 	return ctx.GetStub().PutState(id, participantJSON)
+// }
 
 // common 패키지의 interface를 override하여 사용
-func (s *SmartContract) VoteCountAscent(ctx contractapi.TransactionContextInterface, surveyQuestionNumber string) error {
+func (s *SurveySmartContract) VoteCountAscent(ctx contractapi.TransactionContextInterface, surveyQuestionNumber string) error {
 	queryString := fmt.Sprintf(`{"selector":{"surveyQuestionNumber":"%s"}}`, surveyQuestionNumber)
 	resultsIterator, err := ctx.GetStub().GetQueryResult(queryString)
 	if err != nil {
