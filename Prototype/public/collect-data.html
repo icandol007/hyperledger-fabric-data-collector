@@ -9,7 +9,7 @@
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       height: 100vh;
       margin: 0;
       background-color: #f4f6f9;
@@ -22,8 +22,10 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       width: 80%;
       max-width: 600px;
+      margin-top: 20px;
+      overflow-y: auto;
     }
-    h1 {
+    h1, h2 {
       margin-bottom: 20px;
     }
     input, textarea {
@@ -56,17 +58,34 @@
       text-align: left;
       display: block;
     }
+    .fixed-top {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #fff;
+      padding: 10px;
+      width: 80%;
+      max-width: 600px;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .spacer {
+      height: 80px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="fixed-top">
     <h1>데이터 수집하기</h1>
     <div id="choices">
       <button onclick="showForm('vote')">투표 데이터 수집하기</button>
       <button onclick="showForm('temperature')">지역별 온도 데이터 수집하기</button>
       <button onclick="showForm('survey')">설문 데이터 수집하기</button>
     </div>
-
+  </div>
+  <div class="spacer"></div>
+  <div class="container">
     <div id="voteForm" class="hidden">
       <h2>투표 데이터 수집하기</h2>
       <form id="voteDataForm">
