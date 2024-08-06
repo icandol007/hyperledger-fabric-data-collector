@@ -4,7 +4,7 @@ import "smartcontractPool/smartcontractTemplate/common"
 
 // Candidater : 투표 후보자 에셋
 type Candidate struct {
-	common.CommonAttributes        // 공통 속성 : ID 사용
+	common.CommonAttributes        // 공통 속성 : ID, VoteCount 사용
 	CandidateNumber         string `json:"candidateNumber"`
 	CandidateName           string `json:"candidateName"`
 }

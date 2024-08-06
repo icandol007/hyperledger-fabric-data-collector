@@ -8,7 +8,7 @@ type CommonAttributes struct {
 	Name      string `json:"name"`
 	Age       int    `json:"age"`
 	Region    string `json:"region"`
-	Gender    string `json:"gender"`
+	Gender    int    `json:"gender"`
 	VoteCount int    `json:"voteCount"`
 }
 

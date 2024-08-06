@@ -14,7 +14,7 @@ type VoteSmartContract struct {
 }
 
 // CreateVoter : 새로운 투표 참여자 에셋을 블록체인에 저장
-func (s *VoteSmartContract) CreateVoter(ctx contractapi.TransactionContextInterface, id string, name string, age int, gender string, region string, candidateNumber string) error {
+func (s *VoteSmartContract) CreateVoter(ctx contractapi.TransactionContextInterface, id string, name string, age int, gender int, region string, candidateNumber string) error {
 	// Check if voter already exists
 	voterJSON, err := ctx.GetStub().GetState(id)
 	if err != nil {
