@@ -10,20 +10,24 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ id, password })
-    });
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id, password })
+      });
 
-    const result = await response.json();
-    if (response.ok) {
-      alert('Login successful');
-      navigate('/'); // 로그인 성공 시 메인 페이지로 리디렉션
-    } else {
-      alert('Failed to login: ' + result.error);
+      const result = await response.json();
+      if (response.ok) {
+        alert('Login successful');
+        navigate('/'); // 로그인 성공 시 메인 페이지로 리디렉션
+      } else {
+        alert('Failed to login: ' + result.error);
+      }
+    } catch (error) {
+      alert('An error occurred: ' + error.message);
     }
   };
 

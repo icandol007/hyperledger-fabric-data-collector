@@ -36,12 +36,12 @@ func (s *SurveySmartContract) CreateSurveyItem(ctx contractapi.TransactionContex
 // CreateSurveyParticipant : 새로운 설문조사 참여자 에셋을 블록체인에 저장
 func (s *SurveySmartContract) CreateSurveyParticipant(ctx contractapi.TransactionContextInterface, id string, name string, age int, region string, gender int, surveyQuestionNumber string, surveyAnswer string) error {
 	surveyItem := SurveyItems{
-		SurveyQuestionNumber: surveyQuestionNumber,
-		SurveyAnswer:         surveyAnswer,
+		SurveyQuestionNumber: surveyQuestionNumber, // 설문 질문의 고유한 ID
+		SurveyAnswer:         surveyAnswer,         // 설문에 대한 응답을 저장
 	}
 
 	participant := SurveyParticipant{
-		CommonAttributes: common.CommonAttributes{
+		CommonAttributes: common.CommonAttributes{ // 공통으로 사용되는 에셋 재사용
 			ID:     id,
 			Name:   name,
 			Age:    age,
@@ -55,10 +55,10 @@ func (s *SurveySmartContract) CreateSurveyParticipant(ctx contractapi.Transactio
 	if err != nil {
 		return err
 	}
-
+	// 구성한 에셋을 원장에 저장
 	ctx.GetStub().PutState(id, participantJSON)
-
-	return s.VoteCountAscent(ctx, surveyQuestionNumber) // 해당 설문조사 질문의 참여 횟수를 1증가
+	// 해당 설문조사 질문의 ID를 인자로 사용하여 참여 횟수를 1증가
+	return s.VoteCountAscent(ctx, surveyQuestionNumber)
 }
 
 // GetSurveyItem : 블록체인에서 설문조사 항목 에셋을 조회
@@ -116,8 +116,9 @@ func (s *SurveySmartContract) GetSurveyItem(ctx contractapi.TransactionContextIn
 // 	return ctx.GetStub().PutState(id, participantJSON)
 // }
 
-// common 패키지의 interface를 override하여 사용
+// VoteCountAscent : 설문 데이터 제출 시 득표 변수 1증가
 func (s *SurveySmartContract) VoteCountAscent(ctx contractapi.TransactionContextInterface, surveyQuestionNumber string) error {
+	// surveyQuestionNumber를 이용해 카운트를 증가시킬 에셋을 검색
 	queryString := fmt.Sprintf(`{"selector":{"surveyQuestionNumber":"%s"}}`, surveyQuestionNumber)
 	resultsIterator, err := ctx.GetStub().GetQueryResult(queryString)
 	if err != nil {
@@ -136,7 +137,7 @@ func (s *SurveySmartContract) VoteCountAscent(ctx contractapi.TransactionContext
 		if err != nil {
 			return err
 		}
-
+		// surveyItem 에셋의 VoteCount 변수 1 증가
 		surveyItem.VoteCount++
 
 		surveyItemJSON, err := json.Marshal(surveyItem)
