@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Collection System</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -68,13 +69,13 @@
       <div></div>
       <button id="logoutBtn" class="logout-btn hidden" onclick="logout()">로그아웃</button>
     </div>
-    <button id="registerBtn" class="hidden" onclick="window.location.href='/register.html'">회원가입</button>
-    <button id="loginBtn" onclick="window.location.href='/login.html'">로그인</button>
-    <button id="collectDataBtn" class="hidden" onclick="window.location.href='/collect-data.html'">데이터 수집하기</button>
-    <button id="participateDataCollectionBtn" class="hidden" onclick="window.location.href='/participate-data-collection.html'">데이터 수집에 참여하기</button>
-    <button id="templateListBtn" class="hidden" onclick="window.location.href='/template-list.html'">스마트 컨트랙트 템플릿 리스트</button>
-    <button id="monitorSmartContractsBtn" class="hidden" onclick="window.location.href='/monitor-smart-contracts.html'">스마트 컨트랙트 모니터링</button>
-    <button id="deploySmartContractBtn" class="hidden" onclick="window.location.href='/deploy-smart-contract.html'">스마트 컨트랙트 배포</button>
+    <button id="registerBtn" class="btnBlueGreen btnPush" onclick="window.location.href='/register.html'">회원가입</button>
+    <button id="loginBtn" class="btnBlueGreen btnPush" onclick="window.location.href='/login.html'">로그인</button>
+    <button id="collectDataBtn" class="btnBlueGreen btnPush hidden" onclick="window.location.href='/collect-data.html'">데이터 수집하기</button>
+    <button id="participateDataCollectionBtn" class="btnBlueGreen btnPush hidden" onclick="window.location.href='/participate-data-collection.html'">데이터 수집에 참여하기</button>
+    <button id="templateListBtn" class="btnBlueGreen btnPush hidden" onclick="window.location.href='/template-list.html'">스마트 컨트랙트 템플릿 리스트</button>
+    <button id="monitorSmartContractsBtn" class="btnBlueGreen btnPush hidden" onclick="window.location.href='/monitor-smart-contracts.html'">스마트 컨트랙트 모니터링</button>
+    <button id="deploySmartContractBtn" class="btnBlueGreen btnPush hidden" onclick="window.location.href='/deploy-smart-contract.html'">스마트 컨트랙트 배포</button>
   </div>
 
   <script>
