@@ -16,12 +16,12 @@ type SurveySmartContract struct {
 // CreateSurveyItem : 새로운 설문조사 항목 에셋을 블록체인에 저장
 func (s *SurveySmartContract) CreateSurveyItem(ctx contractapi.TransactionContextInterface, surveyQuestionNumber string, surveyQuestionContent string) error {
 	surveyItem := SurveyItems{
-		SurveyQuestionNumber:  surveyQuestionNumber,
-		SurveyQuestionContent: surveyQuestionContent,
-		SurveyAnswer:          "", // 질문을 생성하는 과정이기 때문에 답변 항목은 빈칸으로 저장
+		SurveyQuestionNumber:  surveyQuestionNumber,  // 설문 질문의 고유한 ID
+		SurveyQuestionContent: surveyQuestionContent, // 설문 질문 내용
+		SurveyAnswer:          "",                    // 질문을 생성하는 과정이기 때문에 답변 항목은 빈칸으로 저장
 
 		CommonAttributes: common.CommonAttributes{
-			VoteCount: 0,
+			VoteCount: 0, // 질문의 응답 횟수를 저장할 용도로 사용
 		},
 	}
 
@@ -29,12 +29,12 @@ func (s *SurveySmartContract) CreateSurveyItem(ctx contractapi.TransactionContex
 	if err != nil {
 		return err
 	}
-
+	// 구성한 에셋을 원장에 저장
 	return ctx.GetStub().PutState(surveyQuestionNumber, surveyItemJSON)
 }
 
 // CreateSurveyParticipant : 새로운 설문조사 참여자 에셋을 블록체인에 저장
-func (s *SurveySmartContract) CreateSurveyParticipant(ctx contractapi.TransactionContextInterface, id string, name string, age int, region string, gender string, surveyQuestionNumber string, surveyAnswer string) error {
+func (s *SurveySmartContract) CreateSurveyParticipant(ctx contractapi.TransactionContextInterface, id string, name string, age int, region string, gender int, surveyQuestionNumber string, surveyAnswer string) error {
 	surveyItem := SurveyItems{
 		SurveyQuestionNumber: surveyQuestionNumber,
 		SurveyAnswer:         surveyAnswer,
