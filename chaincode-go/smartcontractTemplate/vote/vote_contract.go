@@ -15,7 +15,7 @@ type VoteSmartContract struct {
 
 // CreateVoter : 새로운 투표 참여자 에셋을 블록체인에 저장
 func (s *VoteSmartContract) CreateVoter(ctx contractapi.TransactionContextInterface, id string, name string, age int, gender int, region string, candidateNumber string) error {
-	// Check if voter already exists
+	// 투표 데이터를 이미 제출한 사람인지 id를 통해 확인
 	voterJSON, err := ctx.GetStub().GetState(id)
 	if err != nil {
 		return err
@@ -25,6 +25,7 @@ func (s *VoteSmartContract) CreateVoter(ctx contractapi.TransactionContextInterf
 	}
 
 	voter := Voter{
+		// common의 에셋을 재사용
 		CommonAttributes: common.CommonAttributes{
 			ID:     id,
 			Name:   name,
@@ -32,7 +33,7 @@ func (s *VoteSmartContract) CreateVoter(ctx contractapi.TransactionContextInterf
 			Gender: gender,
 			Region: region,
 		},
-
+		// candidate의 에셋을 재사용
 		Candidate: Candidate{
 			CandidateNumber: candidateNumber,
 		},
@@ -42,12 +43,12 @@ func (s *VoteSmartContract) CreateVoter(ctx contractapi.TransactionContextInterf
 	if err != nil {
 		return err
 	}
-
+	// 입력 내용으로 만든 voter 에셋을 원장에 추가
 	err = ctx.GetStub().PutState(id, voterJSON)
 	if err != nil {
 		return err
 	}
-
+	// 마지막 return문에 VoteCountAscent 함수를 실행시켜 득표수 1증가
 	return s.VoteCountAscent(ctx, candidateNumber)
 }
 
@@ -68,24 +69,32 @@ func (s *VoteSmartContract) CreateCandidate(ctx contractapi.TransactionContextIn
 	return ctx.GetStub().PutState(candidateNumber, candidateJSON)
 }
 
-// // GetVoter : 블록체인에서 투표 참여자 에셋을 조회
-// func (s *VoteSmartContract) GetVoter(ctx contractapi.TransactionContextInterface, id string) (*Voter, error) {
-// 	voterJSON, err := ctx.GetStub().GetState(id)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	if voterJSON == nil {
-// 		return nil, fmt.Errorf("voter %s does not exist", id)
-// 	}
+// GetAllCandidates : 블록체인에서 모든 후보자 에셋을 조회
+func (s *VoteSmartContract) GetAllCandidates(ctx contractapi.TransactionContextInterface) ([]*Candidate, error) {
+	queryString := `{"selector":{"candidateNumber":{"$exists":true}}}`
+	resultsIterator, err := ctx.GetStub().GetQueryResult(queryString)
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
 
-// 	var voter Voter
-// 	err = json.Unmarshal(voterJSON, &voter)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	var candidates []*Candidate
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
 
-// 	return &voter, nil
-// }
+		var candidate Candidate
+		err = json.Unmarshal(queryResponse.Value, &candidate)
+		if err != nil {
+			return nil, err
+		}
+		candidates = append(candidates, &candidate)
+	}
+
+	return candidates, nil
+}
 
 // VoteCountAscent : 투표 데이터 제출 시 득표 변수 1증가
 func (s *VoteSmartContract) VoteCountAscent(ctx contractapi.TransactionContextInterface, searchID string) error {
