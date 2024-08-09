@@ -17,10 +17,21 @@
     h1 {
       margin-bottom: 20px;
     }
-    textarea {
+    .function-block {
       width: 80%;
-      height: 300px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
       margin-bottom: 20px;
+      padding: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-bottom: 10px;
+      font-family: monospace;
+      font-size: 14px;
     }
     button {
       padding: 10px 20px;
@@ -38,7 +49,7 @@
 </head>
 <body>
   <h1>Template Editor</h1>
-  <textarea id="templateContent"></textarea>
+  <div id="templateContent"></div>
   <button onclick="saveTemplate()">Save</button>
 
   <script>
@@ -52,22 +63,40 @@
         try {
           const response = await fetch(`/api/templates/${templateId}`);
           const data = await response.json();
-          templateContent.value = data.content;
+          displayTemplateContent(data.content);
         } catch (error) {
-          templateContent.value = 'Failed to load template content';
+          templateContent.innerHTML = '<div class="function-block">Failed to load template content</div>';
         }
+      }
+
+      // 템플릿 내용을 함수별로 나누어 표시
+      function displayTemplateContent(content) {
+        const functionBlocks = content.split(/(?=\/\/[^\n]*\nfunc\s+)/m);
+        functionBlocks.forEach((block, index) => {
+          const textarea = document.createElement('textarea');
+          textarea.id = `function-${index}`;
+          textarea.value = block.trim();
+          const functionBlock = document.createElement('div');
+          functionBlock.className = 'function-block';
+          functionBlock.appendChild(textarea);
+          templateContent.appendChild(functionBlock);
+        });
       }
 
       // 템플릿 내용 저장
       async function saveTemplate() {
-        const content = templateContent.value;
+        const functionBlocks = document.querySelectorAll('.function-block textarea');
+        let content = '';
+        functionBlocks.forEach(block => {
+          content += block.value + '\n\n';
+        });
         try {
           const response = await fetch(`/api/templates/${templateId}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ content })
+            body: JSON.stringify({ content: content.trim() })
           });
           const result = await response.json();
           if (response.ok) {

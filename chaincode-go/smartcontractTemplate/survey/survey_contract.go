@@ -144,7 +144,7 @@ func (s *SurveySmartContract) VoteCountAscent(ctx contractapi.TransactionContext
 		if err != nil {
 			return err
 		}
-
+		// 바뀐 에셋으로 원장 저장
 		err = ctx.GetStub().PutState(surveyItem.SurveyQuestionNumber, surveyItemJSON)
 		if err != nil {
 			return err

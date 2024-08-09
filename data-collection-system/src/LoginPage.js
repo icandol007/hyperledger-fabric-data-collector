@@ -5,18 +5,20 @@ import './LoginPage.css';
 const LoginPage = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
 
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id, password })
+        body: JSON.stringify({ id, password }),
       });
 
       const result = await response.json();
@@ -24,36 +26,49 @@ const LoginPage = () => {
         alert('Login successful');
         navigate('/'); // 로그인 성공 시 메인 페이지로 리디렉션
       } else {
-        alert('Failed to login: ' + result.error);
+        setErrorMessage('Failed to login: ' + result.error);
       }
     } catch (error) {
-      alert('An error occurred: ' + error.message);
+      setErrorMessage('An error occurred: ' + error.message);
     }
   };
 
   return (
-    <div className="container">
-      <h1>Login</h1>
-      <form id="loginForm" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          id="id"
-          name="id"
-          placeholder="ID"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Login</button>
+    <div className="page">
+      <div className="titleWrap">Login</div>
+      <form className="contentWrap" id="loginForm" onSubmit={handleSubmit}>
+        <div className="inputWrap">
+          <div className="inputTitle">ID</div>
+          <input
+            className="input"
+            type="text"
+            id="id"
+            name="id"
+            placeholder="ID"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            required
+          />
+        </div>
+        <div className="inputWrap">
+          <div className="inputTitle">Password</div>
+          <input
+            className="input"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        {errorMessage && (
+          <div className="errorMessageWrap">{errorMessage}</div>
+        )}
+        <button className="bottomButton" type="submit">
+          Login
+        </button>
       </form>
     </div>
   );
