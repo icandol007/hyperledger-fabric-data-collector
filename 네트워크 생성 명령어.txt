@@ -1,0 +1,32 @@
+인증서 생성
+../bin/cryptogen generate --config=./crypto-config.yaml
+
+제네시스 블록 생성
+../bin/configtxgen -profile OrdererGenesis -channelID system-channel -outputBlock ./channel-artifacts/genesis.block
+
+채널 생성 트랜잭션 생성
+../bin/configtxgen -profile Channel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID mychannel
+
+앵커피어 설정
+../bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID mychannel -asOrg Org1MSP
+../bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
+../bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID mychannel -asOrg Org3MSP
+
+채널 생성
+docker exec -it cli peer channel create -o orderer.data-collector.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --outputBlock ./channel-artifacts/channel.block --tls --cafile /etc/hyperledger/orderer/tls/ca.crt
+
+피어 조인
+docker exec -it cli.peer0.org1.data-collector.com peer channel join -b ./channel-artifacts/channel.block
+docker exec -it cli.peer1.org1.data-collector.com peer channel join -b ./channel-artifacts/channel.block
+docker exec -it cli.peer0.org2.data-collector.com peer channel join -b ./channel-artifacts/channel.block
+docker exec -it cli.peer1.org2.data-collector.com peer channel join -b ./channel-artifacts/channel.block
+docker exec -it cli.peer0.org3.data-collector.com peer channel join -b ./channel-artifacts/channel.block
+docker exec -it cli.peer1.org3.data-collector.com peer channel join -b ./channel-artifacts/channel.block
+
+앵커피어 업데이트
+docker exec -it cli.peer0.org1.data-collector.com peer channel update -o orderer.data-collector.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile /etc/hyperledger/orderer/tls/ca.crt
+docker exec -it cli.peer0.org2.data-collector.com peer channel update -o orderer.data-collector.com:7050 -c mychannel -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile /etc/hyperledger/orderer/tls/ca.crt
+docker exec -it cli.peer0.org3.data-collector.com peer channel update -o orderer.data-collector.com:7050 -c mychannel -f ./channel-artifacts/Org3MSPanchors.tx --tls --cafile /etc/hyperledger/orderer/tls/ca.crt
+
+
+
