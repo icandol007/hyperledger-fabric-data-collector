@@ -54,10 +54,10 @@ func (s *VoteSmartContract) CreateVoter(ctx contractapi.TransactionContextInterf
 
 func (s *VoteSmartContract) CreateCandidate(ctx contractapi.TransactionContextInterface, candidateNumber string, candidateName string) error {
 	candidate := Candidate{
-		CandidateNumber: candidateNumber,
-		CandidateName:   candidateName,
+		CandidateNumber: candidateNumber, // 투표 후보 기호
+		CandidateName:   candidateName,   // 투표 후보 이름
 		CommonAttributes: common.CommonAttributes{
-			VoteCount: 0,
+			VoteCount: 0, // 득표 : 0
 		},
 	}
 
@@ -71,7 +71,10 @@ func (s *VoteSmartContract) CreateCandidate(ctx contractapi.TransactionContextIn
 
 // GetAllCandidates : 블록체인에서 모든 후보자 에셋을 조회
 func (s *VoteSmartContract) GetAllCandidates(ctx contractapi.TransactionContextInterface) ([]*Candidate, error) {
+	// 후보자 데이터를 찾기 위해 candidateNumber가 존재하는지 확인하는 쿼리
 	queryString := `{"selector":{"candidateNumber":{"$exists":true}}}`
+
+	// resultsIterator : 쿼리 결과를 순회하며 각 후보자 정보를 Candidate 구조체로 디코딩하고, candidates 슬라이스에 추가
 	resultsIterator, err := ctx.GetStub().GetQueryResult(queryString)
 	if err != nil {
 		return nil, err
@@ -98,6 +101,7 @@ func (s *VoteSmartContract) GetAllCandidates(ctx contractapi.TransactionContextI
 
 // VoteCountAscent : 투표 데이터 제출 시 득표 변수 1증가
 func (s *VoteSmartContract) VoteCountAscent(ctx contractapi.TransactionContextInterface, searchID string) error {
+	// CandidateNumber가 일치하는 에셋을 검색
 	queryString := fmt.Sprintf(`{"selector":{"candidateNumber":"%s"}}`, searchID)
 	resultsIterator, err := ctx.GetStub().GetQueryResult(queryString)
 	if err != nil {
@@ -116,14 +120,14 @@ func (s *VoteSmartContract) VoteCountAscent(ctx contractapi.TransactionContextIn
 		if err != nil {
 			return err
 		}
-
+		// 찾은 candidate 에셋의 VoteCount 변수 1 증가
 		candidate.VoteCount++
 
 		candidateJSON, err := json.Marshal(candidate)
 		if err != nil {
 			return err
 		}
-
+		// 바뀐 에셋으로 원장 저장
 		err = ctx.GetStub().PutState(candidate.CandidateNumber, candidateJSON)
 		if err != nil {
 			return err

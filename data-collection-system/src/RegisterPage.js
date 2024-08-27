@@ -1,25 +1,25 @@
-// RegisterPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './RegisterPage.css';
 
 const RegisterPage = () => {
   const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
+  const [organization, setOrganization] = useState('org1'); // 기본값은 org1(수집자)
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMessage('');
+
     const response = await fetch('/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id, password, username, name }),
+      body: JSON.stringify({ organization, id, username, name }),
     });
 
     if (response.ok) {
@@ -33,10 +33,19 @@ const RegisterPage = () => {
 
   return (
     <div className="page">
-      <div className="titleWrap">
-        회원가입
-      </div>
+      <div className="titleWrap">회원가입</div>
       <form className="contentWrap" onSubmit={handleRegister}>
+        <div className="inputWrap">
+          <div className="inputTitle">조직 선택</div>
+          <select
+            className="input"
+            value={organization}
+            onChange={(e) => setOrganization(e.target.value)}
+          >
+            <option value="org1">수집자 (Org1)</option>
+            <option value="org2">참여자 (Org2)</option>
+          </select>
+        </div>
         <div className="inputWrap">
           <div className="inputTitle">ID</div>
           <input
@@ -45,17 +54,6 @@ const RegisterPage = () => {
             placeholder="ID"
             value={id}
             onChange={(e) => setId(e.target.value)}
-            required
-          />
-        </div>
-        <div className="inputWrap">
-          <div className="inputTitle">Password</div>
-          <input
-            className="input"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
@@ -84,9 +82,7 @@ const RegisterPage = () => {
         {errorMessage && (
           <div className="errorMessageWrap">{errorMessage}</div>
         )}
-        <button className="bottomButton" type="submit">
-          회원가입
-        </button>
+        <button className="bottomButton" type="submit">회원가입</button>
       </form>
     </div>
   );

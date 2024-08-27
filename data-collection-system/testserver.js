@@ -71,29 +71,43 @@ app.post('/api/register', async (req, res) => {
 });
 
 // 로그인 API
-app.post('/api/login', (req, res) => {
-  const { id, password } = req.body;
-  const query = 'SELECT * FROM users WHERE id = ?';
-  db.query(query, [id], async (err, results) => {
-    if (err) {
-      console.error('Error during login:', err);
-      res.status(500).json({ error: 'Failed to login', details: err });
-      return;
-    }
-    if (results.length === 0) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-    const user = results[0];
-    // 비밀번호 확인
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-    // 로그인 성공, 세션 저장
-    req.session.user = user;
-    res.json({ message: 'Login successful' });
-  });
+app.post('/api/register', async (req, res) => {
+  const { organization, id, username, name } = req.body;
+
+  if (!['org1', 'org2'].includes(organization)) {
+      return res.status(400).send({ error: 'Invalid organization' });
+  }
+
+  try {
+      await registerUser(organization, id, username, name);
+      res.status(200).send({ message: 'User registered successfully' });
+  } catch (error) {
+      res.status(500).send({ error: `Failed to register user: ${error.message}` });
+  }
 });
+// app.post('/api/login', (req, res) => {
+//   const { id, password } = req.body;
+//   const query = 'SELECT * FROM users WHERE id = ?';
+//   db.query(query, [id], async (err, results) => {
+//     if (err) {
+//       console.error('Error during login:', err);
+//       res.status(500).json({ error: 'Failed to login', details: err });
+//       return;
+//     }
+//     if (results.length === 0) {
+//       return res.status(401).json({ error: 'Invalid credentials' });
+//     }
+//     const user = results[0];
+//     // 비밀번호 확인
+//     const match = await bcrypt.compare(password, user.password);
+//     if (!match) {
+//       return res.status(401).json({ error: 'Invalid credentials' });
+//     }
+//     // 로그인 성공, 세션 저장
+//     req.session.user = user;
+//     res.json({ message: 'Login successful' });
+//   });
+// });
 
 // 로그아웃 API
 app.post('/api/logout', (req, res) => {
