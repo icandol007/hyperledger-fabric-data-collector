@@ -4,9 +4,10 @@ import './RegisterPage.css';
 
 const RegisterPage = () => {
   const [id, setId] = useState('');
-  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [organization, setOrganization] = useState('org1'); // 기본값은 org1(수집자)
+  const [phonennumber, setPhonenumber] = useState('');
+  const [organization, setOrganization] = useState('org2'); // 기본값은 org2(참여자)
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
@@ -19,7 +20,7 @@ const RegisterPage = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ organization, id, username, name }),
+      body: JSON.stringify({ organization, id, password, name, phonennumber }),
     });
 
     if (response.ok) {
@@ -58,13 +59,13 @@ const RegisterPage = () => {
           />
         </div>
         <div className="inputWrap">
-          <div className="inputTitle">사용자 이름</div>
+          <div className="inputTitle">password</div>
           <input
             className="input"
             type="text"
-            placeholder="사용자 이름"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            placeholder="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
@@ -76,6 +77,17 @@ const RegisterPage = () => {
             placeholder="이름"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="inputWrap">
+          <div className="inputTitle">전화번호</div>
+          <input
+            className="input"
+            type="text"
+            placeholder="전화번호"
+            value={phonennumber}
+            onChange={(e) => setPhonenumber(e.target.value)}
             required
           />
         </div>

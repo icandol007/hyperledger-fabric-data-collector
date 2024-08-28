@@ -2,8 +2,8 @@
   "name": "data-collection-system",
   "version": "1.0.0",
   "private": true,
-  "description": "",
-  "main": "index.js",
+  "description": "data-collection-system with Hyperldeger Fabric",
+  "main": "testserver.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
