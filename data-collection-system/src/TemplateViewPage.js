@@ -29,14 +29,14 @@ const TemplateViewPage = () => {
   };
 
   return (
-    <div className="container">
-      <h1>Template View</h1>
+    <div className="page"> {/* page 클래스를 적용 */}
+      <h1 className="titleWrap">Template View</h1>
       {error ? (
         <p>{error}</p>
       ) : (
         <>
-          <textarea id="templateContent" value={content} readOnly></textarea>
-          <button id="editButton" onClick={handleEdit}>수정</button>
+          <textarea id="templateContent" value={content} readOnly className="contentWrap"></textarea>
+          <button id="editButton" onClick={handleEdit} className="bottomButton">수정</button>
         </>
       )}
     </div>

@@ -57,10 +57,10 @@ app.get('/', (req, res) => {
 
 // 회원가입 API
 app.post('/api/register', async (req, res) => {
-  const { id, password, username, name } = req.body;
+  const { id, password, name, phonennumber } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10); // 비밀번호 해싱
-  const query = 'INSERT INTO users (id, password, username, name) VALUES (?, ?, ?, ?)';
-  db.query(query, [id, hashedPassword, username, name], (err, result) => {
+  const query = 'INSERT INTO users (id, password, name, phonennumber) VALUES (?, ?, ?, ?)';
+  db.query(query, [id, hashedPassword, name, phonennumber], (err, result) => {
     if (err) {
       console.error('Error during user registration:', err);
       res.status(500).json({ error: 'Failed to register user', details: err });
@@ -70,7 +70,6 @@ app.post('/api/register', async (req, res) => {
   });
 });
 
-// 로그인 API
 app.post('/api/register', async (req, res) => {
   const { organization, id, username, name } = req.body;
 
@@ -85,29 +84,31 @@ app.post('/api/register', async (req, res) => {
       res.status(500).send({ error: `Failed to register user: ${error.message}` });
   }
 });
-// app.post('/api/login', (req, res) => {
-//   const { id, password } = req.body;
-//   const query = 'SELECT * FROM users WHERE id = ?';
-//   db.query(query, [id], async (err, results) => {
-//     if (err) {
-//       console.error('Error during login:', err);
-//       res.status(500).json({ error: 'Failed to login', details: err });
-//       return;
-//     }
-//     if (results.length === 0) {
-//       return res.status(401).json({ error: 'Invalid credentials' });
-//     }
-//     const user = results[0];
-//     // 비밀번호 확인
-//     const match = await bcrypt.compare(password, user.password);
-//     if (!match) {
-//       return res.status(401).json({ error: 'Invalid credentials' });
-//     }
-//     // 로그인 성공, 세션 저장
-//     req.session.user = user;
-//     res.json({ message: 'Login successful' });
-//   });
-// });
+
+// 로그인 API
+app.post('/api/login', (req, res) => {
+  const { id, password } = req.body;
+  const query = 'SELECT * FROM users WHERE id = ?';
+  db.query(query, [id], async (err, results) => {
+    if (err) {
+      console.error('Error during login:', err);
+      res.status(500).json({ error: 'Failed to login', details: err });
+      return;
+    }
+    if (results.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    const user = results[0];
+    // 비밀번호 확인
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    // 로그인 성공, 세션 저장
+    req.session.user = user;
+    res.json({ message: 'Login successful' });
+  });
+});
 
 // 로그아웃 API
 app.post('/api/logout', (req, res) => {
