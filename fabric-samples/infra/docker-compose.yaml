@@ -99,7 +99,7 @@ services:  # Docker Compose의 서비스 정의 시작
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051 # peer0의 리슨 주소 설정
       - CORE_PEER_CHAINCODEADDRESS=peer0.org1.data-collector.com:7052 # 체인코드 주소 설정
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052 # 체인코드 리슨 주소 설정
-    # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.data-collector.com:7051 # gossip 부트스트랩 주소 설정
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.data-collector.com:8051 # gossip 부트스트랩 주소 설정 (앵커피어가 아닌 경우)
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.data-collector.com:7051 # 외부 gossip 엔드포인트 설정
       - CORE_PEER_LOCALMSPID=Org1MSP # peer0의 MSP ID 설정
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp # peer0의 MSP 구성 경로 설정
@@ -129,7 +129,7 @@ services:  # Docker Compose의 서비스 정의 시작
       - CORE_PEER_LISTENADDRESS=0.0.0.0:8051 # peer1의 리슨 주소 설정
       - CORE_PEER_CHAINCODEADDRESS=peer1.org1.data-collector.com:8052 # 체인코드 주소 설정
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052 # 체인코드 리슨 주소 설정
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.data-collector.com:7051 # gossip 부트스트랩 주소 설정
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.data-collector.com:7051 # gossip 부트스트랩 주소 설정 (앵커피어가 아닌 경우)
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.data-collector.com:8051 # 외부 gossip 엔드포인트 설정
       - CORE_PEER_LOCALMSPID=Org1MSP # peer1의 MSP ID 설정
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp # peer1의 MSP 구성 경로 설정
@@ -159,7 +159,7 @@ services:  # Docker Compose의 서비스 정의 시작
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051 # peer0의 리슨 주소 설정
       - CORE_PEER_CHAINCODEADDRESS=peer0.org2.data-collector.com:9052 # 체인코드 주소 설정
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052 # 체인코드 리슨 주소 설정
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.data-collector.com:9051 # gossip 부트스트랩 주소 설정
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.data-collector.com:10051 # gossip 부트스트랩 주소 설정 (앵커피어가 아닌 경우)
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.data-collector.com:9051 # 외부 gossip 엔드포인트 설정
       - CORE_PEER_LOCALMSPID=Org2MSP # peer0의 MSP ID 설정
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp # peer0의 MSP 구성 경로 설정
@@ -189,7 +189,7 @@ services:  # Docker Compose의 서비스 정의 시작
       - CORE_PEER_LISTENADDRESS=0.0.0.0:10051 # peer1의 리슨 주소 설정
       - CORE_PEER_CHAINCODEADDRESS=peer1.org2.data-collector.com:10052 # 체인코드 주소 설정
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052 # 체인코드 리슨 주소 설정
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.data-collector.com:9051 # gossip 부트스트랩 주소 설정
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.data-collector.com:9051 # gossip 부트스트랩 주소 설정 (앵커피어가 아닌 경우)
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.data-collector.com:10051 # 외부 gossip 엔드포인트 설정
       - CORE_PEER_LOCALMSPID=Org2MSP # peer1의 MSP ID 설정
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp # peer1의 MSP 구성 경로 설정
@@ -219,7 +219,7 @@ services:  # Docker Compose의 서비스 정의 시작
       - CORE_PEER_LISTENADDRESS=0.0.0.0:11051 # peer0의 리슨 주소 설정
       - CORE_PEER_CHAINCODEADDRESS=peer0.org3.data-collector.com:11052 # 체인코드 주소 설정
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:11052 # 체인코드 리슨 주소 설정
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org3.data-collector.com:11051 # gossip 부트스트랩 주소 설정
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org3.data-collector.com:12051 # gossip 부트스트랩 주소 설정 (앵커피어가 아닌 경우)
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org3.data-collector.com:11051 # 외부 gossip 엔드포인트 설정
       - CORE_PEER_LOCALMSPID=Org3MSP # peer0의 MSP ID 설정
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp # peer0의 MSP 구성 경로 설정
@@ -249,7 +249,7 @@ services:  # Docker Compose의 서비스 정의 시작
       - CORE_PEER_LISTENADDRESS=0.0.0.0:12051 # peer1의 리슨 주소 설정
       - CORE_PEER_CHAINCODEADDRESS=peer1.org3.data-collector.com:12052 # 체인코드 주소 설정
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:12052 # 체인코드 리슨 주소 설정
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org3.data-collector.com:11051 # gossip 부트스트랩 주소 설정
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org3.data-collector.com:11051 # gossip 부트스트랩 주소 설정 (앵커피어가 아닌 경우)
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org3.data-collector.com:12051 # 외부 gossip 엔드포인트 설정
       - CORE_PEER_LOCALMSPID=Org3MSP # peer1의 MSP ID 설정
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp # peer1의 MSP 구성 경로 설정
