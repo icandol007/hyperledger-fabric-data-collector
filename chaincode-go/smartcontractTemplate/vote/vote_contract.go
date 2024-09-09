@@ -10,7 +10,7 @@ import (
 
 type VoteSmartContract struct {
 	contractapi.Contract
-	common.Common
+	common.CommonAttributes
 }
 
 // CreateVoter : 새로운 투표 참여자 에셋을 블록체인에 저장
@@ -56,9 +56,7 @@ func (s *VoteSmartContract) CreateCandidate(ctx contractapi.TransactionContextIn
 	candidate := Candidate{
 		CandidateNumber: candidateNumber, // 투표 후보 기호
 		CandidateName:   candidateName,   // 투표 후보 이름
-		CommonAttributes: common.CommonAttributes{
-			VoteCount: 0, // 득표 : 0
-		},
+		VoteCount:       0,               // 득표 : 0
 	}
 
 	candidateJSON, err := json.Marshal(candidate)

@@ -10,7 +10,7 @@ import (
 
 type SurveySmartContract struct {
 	contractapi.Contract
-	common.Common
+	common.CommonAttributes
 }
 
 // CreateSurveyItem : 새로운 설문조사 항목 에셋을 블록체인에 저장
@@ -56,9 +56,8 @@ func (s *SurveySmartContract) CreateSurveyParticipant(ctx contractapi.Transactio
 		return err
 	}
 	// 구성한 에셋을 원장에 저장
-	ctx.GetStub().PutState(id, participantJSON)
+	return ctx.GetStub().PutState(id, participantJSON)
 	// 해당 설문조사 질문의 ID를 인자로 사용하여 참여 횟수를 1증가
-	return s.VoteCountAscent(ctx, surveyQuestionNumber)
 }
 
 // GetSurveyItem : 블록체인에서 설문조사 항목 에셋을 조회
