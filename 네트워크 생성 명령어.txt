@@ -12,12 +12,13 @@
 ../bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
 ../bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID mychannel -asOrg Org3MSP
 
-../../fabric-samples/bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID mychannel -asOrg Org1MSP
-../../fabric-samples/bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP
-../../fabric-samples/bin/configtxgen -profile Channel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID mychannel -asOrg Org3MSP
+도커 컨테이너 up
+docker-compose -f docker-compose.yaml up -d
 
 채널 생성
 docker exec -it cli peer channel create -o orderer.data-collector.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --outputBlock ./channel-artifacts/channel.block --tls --cafile /etc/hyperledger/orderer/tls/ca.crt
+
+********이까지하고 sh ./start_network.sh 하니까 또 됨??********
 
 피어 조인
 docker exec -it cli.peer0.org1.data-collector.com peer channel join -b ./channel-artifacts/channel.block
@@ -31,6 +32,3 @@ docker exec -it cli.peer1.org3.data-collector.com peer channel join -b ./channel
 docker exec -it cli.peer0.org1.data-collector.com peer channel update -o orderer.data-collector.com:7050 -c mychannel -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile /etc/hyperledger/orderer/tls/ca.crt
 docker exec -it cli.peer0.org2.data-collector.com peer channel update -o orderer.data-collector.com:7050 -c mychannel -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile /etc/hyperledger/orderer/tls/ca.crt
 docker exec -it cli.peer0.org3.data-collector.com peer channel update -o orderer.data-collector.com:7050 -c mychannel -f ./channel-artifacts/Org3MSPanchors.tx --tls --cafile /etc/hyperledger/orderer/tls/ca.crt
-
-
-
