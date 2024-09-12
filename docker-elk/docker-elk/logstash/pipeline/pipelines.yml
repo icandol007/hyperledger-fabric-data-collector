@@ -1,8 +1,0 @@
-- pipeline.id: vote_pipeline
-  path.config: "./candidate.conf"  # 투표 데이터 파이프라인
-
-- pipeline.id: survey_pipeline
-  path.config: "./survey.conf"  # 설문 데이터 파이프라인
-
-- pipeline.id: temperature_pipeline
-  path.config: "./temperature.conf"  # 수치 데이터 파이프라인
