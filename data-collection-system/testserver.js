@@ -7,7 +7,8 @@ const bcrypt = require('bcrypt');
 const app = express();
 const { exec } = require('child_process');
 const port = 3001;
-const { Wallets, Gateway } = require('fabric-network');
+const { Gateway, Wallets } = require('fabric-network');
+const FabricCAServices = require('fabric-ca-client');
 const fs = require('fs');
 const path = require('path');
 
@@ -53,6 +54,42 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', '/src/MainPage.js'));
 });
 
+// -------------------------블록체인 네트워크 연결--------------------------------
+async function connectToNetwork() {
+  try {
+    // 1. 연결 프로필 파일 로드
+    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+    // 2. 지갑 생성 또는 가져오기
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+    console.log(`Wallet path: ${walletPath}`);
+
+    // 3. 사용자 인증서 확인
+    const identity = await wallet.get('appUser');
+    if (!identity) {
+      console.log('An identity for the user "appUser" does not exist in the wallet');
+      console.log('Run the registerUser.js application before retrying');
+      return null;
+    }
+
+    // 4. Gateway 인스턴스 생성
+    const gateway = new Gateway();
+    await gateway.connect(ccp, {
+      wallet,
+      identity: 'appUser',
+      discovery: { enabled: true, asLocalhost: true },
+    });
+
+    // 5. 네트워크와 체인코드 참조 가져오기
+    const network = await gateway.getNetwork('mychannel'); // 채널 이름
+    const contract = network.getContract('mycc'); // 체인코드 이름
+
+    return contract; // 체인코드 참조 반환
+  } catch (error) {
+    console.error(`Failed to connect to network: ${error}`);
+    return null;
+  }
+}
 // ---------------------------로그인 관련--------------------------------------
 
 // 회원가입 API
@@ -69,7 +106,7 @@ app.post('/api/register', async (req, res) => {
     res.json({ message: 'User registered successfully', result });
   });
 });
-
+/*
 app.post('/api/register', async (req, res) => {
   const { organization, id, username, name } = req.body;
 
@@ -84,7 +121,7 @@ app.post('/api/register', async (req, res) => {
       res.status(500).send({ error: `Failed to register user: ${error.message}` });
   }
 });
-
+*/
 // 로그인 API
 app.post('/api/login', (req, res) => {
   const { id, password } = req.body;
