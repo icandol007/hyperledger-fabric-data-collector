@@ -5,10 +5,12 @@
   "description": "data-collection-system with Hyperldeger Fabric",
   "main": "testserver.js",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently \"npm run start-client\" \"npm run start-server\"",
+    "start-client": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start-server": "node testserver.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +25,7 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "fabric-network": "^2.2.20",
+    "lucide-react": "^0.439.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.10.3",
     "nano": "^10.1.3",
@@ -30,6 +33,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
     "react-scripts": "^3.0.1",
+    "recharts": "^2.12.7",
     "web-vitals": "^2.1.4"
   },
   "eslintConfig": {
@@ -49,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
   }
 }
