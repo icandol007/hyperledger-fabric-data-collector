@@ -6,13 +6,13 @@ const fs = require('fs');
 const path = require('path');
 
 async function registerUser(organization, id, name, password, phonenumber) {
-    const connection = await mysql.createConnection({host: 'localhost', user: 'root', database: 'fabric_users'});
+    const connection = await mysql.createConnection({host: 'localhost', user: 'root', database: 'users'});
 
     try {
-        const ccpPath = path.resolve(__dirname, '..', 'test-network', 'organizations', 'peerOrganizations', `${organization}.example.com`, `connection-${organization}.json`);
+        const ccpPath = path.resolve(__dirname, '../../config-files', `${organization}.data-collector.com`, `connection-${organization}.json`);
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
-        const caInfo = ccp.certificateAuthorities[`ca.${organization}.example.com`];
+        const caInfo = ccp.certificateAuthorities[`ca.${organization}.data-collector.com`];
         const caTLSCACerts = caInfo.tlsCACerts.pem;
         const ca = new FabricCAServices(caInfo.url, { trustedRoots: caTLSCACerts, verify: false }, caInfo.caName);
 
@@ -41,7 +41,7 @@ async function registerUser(organization, id, name, password, phonenumber) {
             role: 'client',
             attrs: [
                 { name: 'name', value: name, ecert: true },
-                { name: 'phonenumber', value: phonenumber, ecert: true }  // 전화번호 추가
+                //{ name: 'phonenumber', value: phonenumber, ecert: true }  // 전화번호 추가
             ]
         }, adminUser);
 
