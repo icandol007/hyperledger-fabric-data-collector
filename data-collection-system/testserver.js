@@ -11,9 +11,10 @@ const { Gateway, Wallets } = require('fabric-network');
 const FabricCAServices = require('fabric-ca-client');
 const fs = require('fs');
 const path = require('path');
+const registerUser = require('./server/registerUser');
 
 // Fabric Network 연결 Configuration
-const ccpPath = path.resolve(__dirname, 'connection-profile.json'); // 연결 프로파일 파일의 경로
+const ccpPath = path.resolve(__dirname, '../config-files/connection-org1.json'); // 연결 프로파일 파일의 경로
 const walletPath = path.join(process.cwd(), 'wallet'); // 지갑 경로
 
 // CouchDB 데이터베이스 선택
@@ -51,7 +52,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // 루트 경로에 대한 요청을 React 앱의 index.html로 리디렉션
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', '/src/MainPage.js'));
+  res.sendFile(path.join(__dirname, '/src/MainPage.js'));
 });
 
 // -------------------------블록체인 네트워크 연결--------------------------------
@@ -84,28 +85,45 @@ async function connectToNetwork() {
     const network = await gateway.getNetwork('mychannel'); // 채널 이름
     const contract = network.getContract('mycc'); // 체인코드 이름
 
+    //연결 성공 메세지
+    console.log('Successfully connected to Hyperledger Fabric network and fetched contract.');
+
     return contract; // 체인코드 참조 반환
   } catch (error) {
     console.error(`Failed to connect to network: ${error}`);
     return null;
   }
 }
+
+connectToNetwork().then(contract => {
+  if (contract) {
+    console.log('Fabric network is ready for transactions.');
+  }
+});
 // ---------------------------로그인 관련--------------------------------------
 
 // 회원가입 API
 app.post('/api/register', async (req, res) => {
-  const { id, password, name, phonennumber } = req.body;
+  const { id, password, name, phonenumber } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10); // 비밀번호 해싱
-  const query = 'INSERT INTO users (id, password, name, phonennumber) VALUES (?, ?, ?, ?)';
-  db.query(query, [id, hashedPassword, name, phonennumber], (err, result) => {
+  const query = 'INSERT INTO users (id, password, name, phonenumber) VALUES (?, ?, ?, ?)';
+
+  db.query(query, [id, hashedPassword, name, phonenumber], async (err, result) => {
     if (err) {
       console.error('Error during user registration:', err);
-      res.status(500).json({ error: 'Failed to register user', details: err });
-      return;
+      return res.status(500).json({ error: 'Failed to register user', details: err });
     }
-    res.json({ message: 'User registered successfully', result });
+    /*try {
+      // registerUser 함수 호출 및 처리
+      await registerUser(organization, id, password, name, phonenumber);
+      return res.json({ message: 'User registered successfully', result });
+    } catch (registerError) {
+      console.error('Error during registering user in blockchain:', registerError);
+      return res.status(500).json({ error: 'Failed to register user in blockchain', details: registerError.message });
+    }*/
   });
 });
+
 /*
 app.post('/api/register', async (req, res) => {
   const { organization, id, username, name } = req.body;
