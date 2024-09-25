@@ -2,15 +2,18 @@
   "name": "data-collection-system",
   "version": "1.0.0",
   "private": true,
+  "proxy": "http://localhost:3001",
   "description": "data-collection-system with Hyperldeger Fabric",
   "main": "testserver.js",
   "scripts": {
-    "start": "concurrently \"npm run start-client\" \"npm run start-server\"",
+    "start": "concurrently \"npm run start-client\" \"npm run start-server\" \"npm run register-user\" \"npm run enroll-admin\"",
     "start-client": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start-server": "node testserver.js"
+    "start-server": "node testserver.js",
+    "register-user": "cd ./server && node registerUser.js",
+    "enroll-admin": "cd ./server && node enrollAdmin.js"
   },
   "keywords": [],
   "author": "",
