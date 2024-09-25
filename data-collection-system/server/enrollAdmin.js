@@ -6,11 +6,11 @@ const path = require('path');
 async function main() {
     try {
         // 네트워크 구성 파일
-        const ccpPath = path.resolve(__dirname, '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+        const ccpPath = path.resolve(__dirname, '../../config-files/connection-org1.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8')); // JSON 형식으로 구성 파일 읽기
 
         // CA와 상호 작용하기 위한 새로운 CA 클라이언트 생성
-        const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
+        const caInfo = ccp.certificateAuthorities['ca.org1.data-collector.com'];
         const caTLSCACerts = caInfo.tlsCACerts.pem; // TLS CA 인증서 로드
         const ca = new FabricCAServices(caInfo.url, { trustedRoots: caTLSCACerts, verify: false }, caInfo.caName); // CA 클라이언트 인스턴스 생성
 
