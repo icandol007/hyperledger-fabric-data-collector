@@ -6,7 +6,7 @@ const RegisterPage = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [phonennumber, setPhonenumber] = useState('');
+  const [phonenumber, setPhonenumber] = useState('');
   const [organization, setOrganization] = useState('org2'); // 기본값은 org2(참여자)
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
@@ -15,20 +15,26 @@ const RegisterPage = () => {
     e.preventDefault();
     setErrorMessage('');
 
-    const response = await fetch('/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ organization, id, password, name, phonennumber }),
-    });
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ organization, id, password, name, phonenumber }),
+      });
 
-    if (response.ok) {
-      alert('회원가입이 완료되었습니다.');
-      navigate('/');
-    } else {
-      const result = await response.json();
-      setErrorMessage('회원가입에 실패했습니다: ' + result.error);
+      if (response.ok) {
+        alert('회원가입이 완료되었습니다.');
+        navigate('/');  // 메인 페이지로 이동
+      } else {
+        const result = await response.json();
+        console.error('Error during registration:', result.error);
+        setErrorMessage('회원가입에 실패했습니다: ' + result.error);
+      }
+    } catch (error) {
+      console.erroer('Error during registration request:', error);
+      setErrorMessage('회원가입 중 오류가 발생했습니다: ' + error.message);
     }
   };
 
@@ -86,7 +92,7 @@ const RegisterPage = () => {
             className="input"
             type="text"
             placeholder="전화번호"
-            value={phonennumber}
+            value={phonenumber}
             onChange={(e) => setPhonenumber(e.target.value)}
             required
           />
