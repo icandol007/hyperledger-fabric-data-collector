@@ -31,19 +31,18 @@ const CollectDataPage = () => {
   };
 
   return (
-    <div>
-      <div className="fixed-top">
+    <div className="collect-data-page">
+      <div className="header">
         <h1>데이터 수집하기</h1>
-        <div id="choices">
+        <div className="button-group">
           <button onClick={() => setFormType('vote')}>투표 데이터 수집하기</button>
           <button onClick={() => setFormType('temperature')}>지역별 온도 데이터 수집하기</button>
           <button onClick={() => setFormType('survey')}>설문 데이터 수집하기</button>
         </div>
       </div>
-      <div className="spacer"></div>
-      <div className="container">
+      <div className="form-container">
         {formType === 'vote' && (
-          <div id="voteForm">
+          <div className="form-card">
             <h2>투표 데이터 수집하기</h2>
             <form
               onSubmit={(e) =>
@@ -70,12 +69,12 @@ const CollectDataPage = () => {
                   <input type="text" name={`candidates[${i + 1}][name]`} placeholder="후보자명" required />
                 </div>
               ))}
-              <button type="submit">Submit</button>
+              <button type="submit">제출하기</button>
             </form>
           </div>
         )}
         {formType === 'temperature' && (
-          <div id="temperatureForm">
+          <div className="form-card">
             <h2>지역별 온도 데이터 수집하기</h2>
             <form
               onSubmit={(e) =>
@@ -100,12 +99,12 @@ const CollectDataPage = () => {
                   <input type="text" name={`regions[${i + 1}][region]`} placeholder="지역명" required />
                 </div>
               ))}
-              <button type="submit">Submit</button>
+              <button type="submit">제출하기</button>
             </form>
           </div>
         )}
         {formType === 'survey' && (
-          <div id="surveyForm">
+          <div className="form-card">
             <h2>설문 데이터 수집하기</h2>
             <form
               onSubmit={(e) =>
@@ -132,7 +131,7 @@ const CollectDataPage = () => {
                   <input type="text" name={`questions[${i + 1}][content]`} placeholder="질문내용" required />
                 </div>
               ))}
-              <button type="submit">Submit</button>
+              <button type="submit">제출하기</button>
             </form>
           </div>
         )}
