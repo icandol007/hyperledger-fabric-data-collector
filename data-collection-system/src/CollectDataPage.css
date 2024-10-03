@@ -2,7 +2,7 @@ body {
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center; /* 수직 중앙 정렬 */
   height: 100vh;
   margin: 0;
   background-color: #f4f6f9;
@@ -14,9 +14,9 @@ body {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  max-width: 600px;
-  margin-top: 20px;
+  width: 70%; /* 너비를 줄여서 중앙에 집중 */
+  max-width: 500px; /* 최대 너비 설정 */
+  margin-top: 0; /* 수직 중앙 정렬 위해 여백 제거 */
   overflow-y: auto;
 }
 
@@ -67,8 +67,8 @@ label {
   transform: translateX(-50%);
   background-color: #fff;
   padding: 10px;
-  width: 80%;
-  max-width: 600px;
+  width: 70%; /* 너비를 줄여서 중앙에 집중 */
+  max-width: 500px;
   z-index: 1000;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
