@@ -1,77 +1,143 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './LoginPage.css';
+import './CollectDataPage.css';
 
-const LoginPage = () => {
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate();
+const CollectDataPage = () => {
+  const [formType, setFormType] = useState(null);
+  const [numCandidates, setNumCandidates] = useState(0);
+  const [numRegions, setNumRegions] = useState(0);
+  const [numQuestions, setNumQuestions] = useState(0);
 
-  const handleSubmit = async (e) => {
+  const handleFormSubmit = async (e, apiUrl, formData) => {
     e.preventDefault();
-    setErrorMessage('');
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ id, password }),
+        body: JSON.stringify(formData)
       });
 
       const result = await response.json();
       if (response.ok) {
-        alert('Login successful');
-        navigate('/'); // 로그인 성공 시 메인 페이지로 리디렉션
+        alert('Data collected successfully');
       } else {
-        setErrorMessage('Failed to login: ' + result.error);
+        alert('Failed to collect data: ' + result.error);
       }
     } catch (error) {
-      setErrorMessage('An error occurred: ' + error.message);
+      console.error('Error collecting data:', error);
     }
   };
 
   return (
-    <div className="page">
-      <div className="titleWrap">Login</div>
-      <form className="contentWrap" id="loginForm" onSubmit={handleSubmit}>
-        <div className="inputWrap">
-          <div className="inputTitle">ID</div>
-          <input
-            className="input"
-            type="text"
-            id="id"
-            name="id"
-            placeholder="ID"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-            required
-          />
+    <div className="collect-data-page">
+      <div className="header">
+        <h1>데이터 수집하기</h1>
+        <div className="button-group">
+          <button onClick={() => setFormType('vote')}>투표 데이터 수집하기</button>
+          <button onClick={() => setFormType('temperature')}>지역별 온도 데이터 수집하기</button>
+          <button onClick={() => setFormType('survey')}>설문 데이터 수집하기</button>
         </div>
-        <div className="inputWrap">
-          <div className="inputTitle">Password</div>
-          <input
-            className="input"
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {errorMessage && (
-          <div className="errorMessageWrap">{errorMessage}</div>
+      </div>
+      <div className="form-container">
+        {formType === 'vote' && (
+          <div className="form-card">
+            <h2>투표 데이터 수집하기</h2>
+            <form
+              onSubmit={(e) =>
+                handleFormSubmit(e, '/api/collect-vote-data', {
+                  numCandidates,
+                  candidates: Array.from({ length: numCandidates }).map((_, i) => ({
+                    symbolNumber: e.target[`candidates[${i + 1}][symbolNumber]`].value,
+                    name: e.target[`candidates[${i + 1}][name]`].value,
+                  }))
+                })
+              }
+            >
+              <input
+                type="number"
+                value={numCandidates}
+                onChange={(e) => setNumCandidates(parseInt(e.target.value))}
+                placeholder="후보자 수 입력"
+                required
+              />
+              {Array.from({ length: numCandidates }).map((_, i) => (
+                <div key={i} className="input-group">
+                  <label>후보자 {i + 1}</label>
+                  <input type="number" name={`candidates[${i + 1}][symbolNumber]`} placeholder="기호번호" required />
+                  <input type="text" name={`candidates[${i + 1}][name]`} placeholder="후보자명" required />
+                </div>
+              ))}
+              <button type="submit">제출하기</button>
+            </form>
+          </div>
         )}
-        <button className="bottomButton" type="submit">
-          Login
-        </button>
-      </form>
+        {formType === 'temperature' && (
+          <div className="form-card">
+            <h2>지역별 온도 데이터 수집하기</h2>
+            <form
+              onSubmit={(e) =>
+                handleFormSubmit(e, '/api/collect-temperature-data', {
+                  numRegions,
+                  regions: Array.from({ length: numRegions }).map((_, i) => ({
+                    region: e.target[`regions[${i + 1}][region]`].value,
+                  }))
+                })
+              }
+            >
+              <input
+                type="number"
+                value={numRegions}
+                onChange={(e) => setNumRegions(parseInt(e.target.value))}
+                placeholder="지역 수 입력"
+                required
+              />
+              {Array.from({ length: numRegions }).map((_, i) => (
+                <div key={i} className="input-group">
+                  <label>지역 {i + 1}</label>
+                  <input type="text" name={`regions[${i + 1}][region]`} placeholder="지역명" required />
+                </div>
+              ))}
+              <button type="submit">제출하기</button>
+            </form>
+          </div>
+        )}
+        {formType === 'survey' && (
+          <div className="form-card">
+            <h2>설문 데이터 수집하기</h2>
+            <form
+              onSubmit={(e) =>
+                handleFormSubmit(e, '/api/collect-survey-data', {
+                  numQuestions,
+                  questions: Array.from({ length: numQuestions }).map((_, i) => ({
+                    questionNumber: e.target[`questions[${i + 1}][questionNumber]`].value,
+                    content: e.target[`questions[${i + 1}][content]`].value,
+                  }))
+                })
+              }
+            >
+              <input
+                type="number"
+                value={numQuestions}
+                onChange={(e) => setNumQuestions(parseInt(e.target.value))}
+                placeholder="질문 수 입력"
+                required
+              />
+              {Array.from({ length: numQuestions }).map((_, i) => (
+                <div key={i} className="input-group">
+                  <label>질문 {i + 1}</label>
+                  <input type="number" name={`questions[${i + 1}][questionNumber]`} placeholder="질문번호" required />
+                  <input type="text" name={`questions[${i + 1}][content]`} placeholder="질문내용" required />
+                </div>
+              ))}
+              <button type="submit">제출하기</button>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default CollectDataPage;
