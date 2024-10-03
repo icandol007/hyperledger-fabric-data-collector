@@ -24,7 +24,7 @@ const chaincodeDB = nano.db.use('smart_contract_pool'); // 'chaincode_db'는 Cou
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '1234',
+  password: 'password',
   database: 'userinfo',
   port: 3306
 });
@@ -104,21 +104,26 @@ connectToNetwork().then(contract => {
 
 // 회원가입 API
 app.post('/api/register', async (req, res) => {
-  const { organization, id, password, name, phonenumber } = req.body;
+  const { id, password, name, phonenumber } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10); // 비밀번호 해싱
   const query = 'INSERT INTO users (id, password, name, phonenumber) VALUES (?, ?, ?, ?)';
 
-  try {
-    // registerUser 함수 호출 및 처리
-    await registerUser(organization, id, password, name, phonenumber);
-    return res.json({ message: 'User registered successfully'});
-  } catch (registerError) {
-    console.error('Error during registering user in blockchain:', registerError);
-    return res.status(500).json({ error: 'Failed to register user in blockchain', details: registerError.message });
-  }
+  db.query(query, [id, hashedPassword, name, phonenumber], async (err, result) => {
+    if (err) {
+      console.error('Error during user registration:', err);
+      return res.status(500).json({ error: 'Failed to register user', details: err });
+    }
+    /*try {
+      // registerUser 함수 호출 및 처리
+      await registerUser(organization, id, password, name, phonenumber);
+      return res.json({ message: 'User registered successfully', result });
+    } catch (registerError) {
+      console.error('Error during registering user in blockchain:', registerError);
+      return res.status(500).json({ error: 'Failed to register user in blockchain', details: registerError.message });
+    }*/
+  });
 });
 
-/* 이 밑에 app관련 주석처리돼있었음 registerUser관련 */
 /*
 app.post('/api/register', async (req, res) => {
   const { organization, id, username, name } = req.body;
@@ -133,8 +138,9 @@ app.post('/api/register', async (req, res) => {
   } catch (error) {
       res.status(500).send({ error: `Failed to register user: ${error.message}` });
   }
-});*/
-
+});
+*/
+// 로그인 API
 // 로그인 API
 app.post('/api/login', (req, res) => {
   const { id, password } = req.body;
@@ -154,9 +160,12 @@ app.post('/api/login', (req, res) => {
     if (!match) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-    // 로그인 성공, 세션 저장
-    req.session.user = user;
-    res.json({ message: 'Login successful' });
+    // 로그인 성공, 세션에 사용자 정보 저장
+    req.session.user = {
+      id: user.id,
+      isAdmin: user.isAdmin // 관리자 여부 저장
+    };
+    res.json({ message: 'Login successful', isAdmin: user.isAdmin });
   });
 });
 
@@ -179,7 +188,7 @@ app.get('/api/me', (req, res) => {
   const user = req.session.user; // 세션에서 사용자 정보를 가져옵니다.
   
   if (user) {
-    res.json({ loggedIn: true, id: user.id, isAdmin: user.is_admin });
+    res.json({ loggedIn: true, id: user.id, isAdmin: user.isAdmin });
   } else {
     res.json({ loggedIn: false });
   }
@@ -280,7 +289,7 @@ app.post('/api/participate-data-collection', (req, res) => {
 
 // 관리자 인증 미들웨어
 function adminAuth(req, res, next) {
-  if (req.session.user && req.session.user.is_admin) {
+  if (req.session.user && req.session.user.isAdmin) {
     return next();
   }
   res.status(403).json({ error: 'Access denied' });
