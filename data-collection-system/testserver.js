@@ -384,6 +384,116 @@ app.post('/api/deploy-smart-contract', adminAuth, async (req, res) => {
   }
 });
 
+// ---------------------------데이터 조회(org1 수집자) 체인코드 호출 api----------------------------------
+
+const express = require('express');
+const { Gateway, Wallets } = require('fabric-network');
+const fs = require('fs');
+const path = require('path');
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+// 하이퍼레저 패브릭 네트워크와 연결하는 함수
+async function getDataFromContract(funcName, key = null) {
+    try {
+        const ccpPath = path.resolve(__dirname, 'connection-org1.json');
+        const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+        const walletPath = path.join(process.cwd(), 'wallet');
+        const wallet = await Wallets.newFileSystemWallet(walletPath);
+
+        const identity = await wallet.get('appUser');
+        if (!identity) {
+            console.log('Identity for the user "appUser" does not exist in the wallet');
+            return;
+        }
+
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: 'appUser', discovery: { enabled: true, asLocalhost: true } });
+
+        const network = await gateway.getNetwork('mychannel');
+        const contract = network.getContract('environmentContract');
+
+        let result;
+        if (key) {
+            result = await contract.evaluateTransaction(funcName, key);
+        } else {
+            result = await contract.evaluateTransaction(funcName);
+        }
+
+        console.log(`Transaction result for ${funcName}: ${result.toString()}`);
+        await gateway.disconnect();
+
+        return result.toString();
+    } catch (error) {
+        console.error(`Failed to evaluate transaction: ${error}`);
+        throw error;
+    }
+}
+
+// 수질 데이터 전체 조회 API
+app.get('/water-quality', async (req, res) => {
+    try {
+        const result = await getDataFromContract('GetAllWaterQualityData');
+        res.status(200).send(result);
+    } catch (error) {
+        res.status(500).send('Error fetching water quality data');
+    }
+});
+
+// 수질 데이터 단일 조회 API
+app.get('/water-quality/:key', async (req, res) => {
+    try {
+        const key = req.params.key;
+        const result = await getDataFromContract('GetSingleWaterQualityData', key);
+        res.status(200).send(result);
+    } catch (error) {
+        res.status(500).send(`Error fetching water quality data with key: ${key}`);
+    }
+});
+
+// 대기질 데이터 전체 조회 API
+app.get('/air-quality', async (req, res) => {
+    try {
+        const result = await getDataFromContract('GetAllAirQualityData');
+        res.status(200).send(result);
+    } catch (error) {
+        res.status(500).send('Error fetching air quality data');
+    }
+});
+
+// 대기질 데이터 단일 조회 API
+app.get('/air-quality/:key', async (req, res) => {
+    try {
+        const key = req.params.key;
+        const result = await getDataFromContract('GetSingleAirQualityData', key);
+        res.status(200).send(result);
+    } catch (error) {
+        res.status(500).send(`Error fetching air quality data with key: ${key}`);
+    }
+});
+
+// 기상 데이터 전체 조회 API
+app.get('/weather', async (req, res) => {
+    try {
+        const result = await getDataFromContract('GetAllWeatherData');
+        res.status(200).send(result);
+    } catch (error) {
+        res.status(500).send('Error fetching weather data');
+    }
+});
+
+// 기상 데이터 단일 조회 API
+app.get('/weather/:key', async (req, res) => {
+    try {
+        const key = req.params.key;
+        const result = await getDataFromContract('GetSingleWeatherData', key);
+        res.status(200).send(result);
+    } catch (error) {
+        res.status(500).send(`Error fetching weather data with key: ${key}`);
+    }
+});
+
 // 서버 시작
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
