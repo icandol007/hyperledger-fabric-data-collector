@@ -6,6 +6,7 @@ const CollectDataPage = () => {
   const [numCandidates, setNumCandidates] = useState(0);
   const [numRegions, setNumRegions] = useState(0);
   const [numQuestions, setNumQuestions] = useState(0);
+  const [environmentDataTypes, setEnvironmentDataTypes] = useState([]);
 
   const handleFormSubmit = async (e, apiUrl, formData) => {
     e.preventDefault();
@@ -33,11 +34,12 @@ const CollectDataPage = () => {
   return (
     <div className="collect-data-page">
       <div className="header">
-        <h1>데이터 수집하기</h1>
+        <h1>데이터 수집 시작하기</h1>
         <div className="button-group">
           <button onClick={() => setFormType('vote')}>투표 데이터 수집하기</button>
           <button onClick={() => setFormType('temperature')}>지역별 온도 데이터 수집하기</button>
           <button onClick={() => setFormType('survey')}>설문 데이터 수집하기</button>
+          <button onClick={() => setFormType('environment')}>환경 데이터 수집하기</button>
         </div>
       </div>
       <div className="form-container">
@@ -129,6 +131,43 @@ const CollectDataPage = () => {
                   <label>질문 {i + 1}</label>
                   <input type="number" name={`questions[${i + 1}][questionNumber]`} placeholder="질문번호" required />
                   <input type="text" name={`questions[${i + 1}][content]`} placeholder="질문내용" required />
+                </div>
+              ))}
+              <button type="submit">제출하기</button>
+            </form>
+          </div>
+        )}
+        {formType === 'environment' && (
+          <div className="form-card">
+            <h2>환경 데이터 수집하기</h2>
+            <form
+              onSubmit={(e) =>
+                handleFormSubmit(e, '/api/collect-environment-data', {
+                  numRegions,
+                  regions: Array.from({ length: numRegions }).map((_, i) => ({
+                    region: e.target[`regions[${i + 1}][region]`].value,
+                    dataType: e.target[`regions[${i + 1}][dataType]`].value, // 데이터 종류 추가
+                  }))
+                })
+              }
+            >
+              <input
+                type="number"
+                value={numRegions}
+                onChange={(e) => setNumRegions(parseInt(e.target.value))}
+                placeholder="지역 수 입력"
+                required
+              />
+              {Array.from({ length: numRegions }).map((_, i) => (
+                <div key={i} className="input-group">
+                  <label>지역 {i + 1}</label>
+                  <input type="text" name={`regions[${i + 1}][region]`} placeholder="지역명" required />
+                  <label>데이터 종류 선택</label>
+                  <select name={`regions[${i + 1}][dataType]`} required>
+                    <option value="temperature">온도</option>
+                    <option value="humidity">습도</option>
+                    <option value="co2">CO2 농도</option>
+                  </select>
                 </div>
               ))}
               <button type="submit">제출하기</button>
