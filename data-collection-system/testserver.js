@@ -386,11 +386,6 @@ app.post('/api/deploy-smart-contract', adminAuth, async (req, res) => {
 
 // ---------------------------데이터 조회(org1 수집자) 체인코드 호출 api----------------------------------
 
-const express = require('express');
-const { Gateway, Wallets } = require('fabric-network');
-const fs = require('fs');
-const path = require('path');
-const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 // 하이퍼레저 패브릭 네트워크와 연결하는 함수
@@ -443,12 +438,12 @@ app.get('/water-quality', async (req, res) => {
 
 // 수질 데이터 단일 조회 API
 app.get('/water-quality/:key', async (req, res) => {
+  const key = req.params.key;
     try {
-        const key = req.params.key;
         const result = await getDataFromContract('GetSingleWaterQualityData', key);
         res.status(200).send(result);
     } catch (error) {
-        res.status(500).send(`Error fetching water quality data with key: ${key}`);
+      res.status(500).send(`Error fetching water quality data with key: ${key}`);
     }
 });
 
@@ -464,8 +459,8 @@ app.get('/air-quality', async (req, res) => {
 
 // 대기질 데이터 단일 조회 API
 app.get('/air-quality/:key', async (req, res) => {
+  const key = req.params.key;
     try {
-        const key = req.params.key;
         const result = await getDataFromContract('GetSingleAirQualityData', key);
         res.status(200).send(result);
     } catch (error) {
@@ -485,8 +480,8 @@ app.get('/weather', async (req, res) => {
 
 // 기상 데이터 단일 조회 API
 app.get('/weather/:key', async (req, res) => {
+  const key = req.params.key;
     try {
-        const key = req.params.key;
         const result = await getDataFromContract('GetSingleWeatherData', key);
         res.status(200).send(result);
     } catch (error) {
