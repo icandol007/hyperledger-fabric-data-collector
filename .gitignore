@@ -17,6 +17,11 @@ node_modules/
 build
 package-lock.json
 
+# Credential
+/infra/channel-artifacts
+/infra/crypto-config
+/infra/tls
+
 # Eclipse
 .classpath
 .settings
