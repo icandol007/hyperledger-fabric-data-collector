@@ -28,7 +28,10 @@ services:  # Docker Compose의 서비스 정의 시작
     ports:  # 호스트와 컨테이너 간에 매핑할 포트 설정
       - 7050:7050  # 호스트의 7050 포트를 컨테이너의 7050 포트와 매핑
     networks:  # 컨테이너가 연결될 네트워크 설정
-      - basic
+      basic:
+        aliases:
+          - orderer.data-collector.com
+
 
   ca.org1.data-collector.com:  # Org1의 CA 서비스 정의
     image: hyperledger/fabric-ca:latest  # 사용할 도커 이미지 설정
@@ -51,7 +54,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - ./crypto-config/peerOrganizations/org1.data-collector.com/ca/:/etc/hyperledger/fabric-ca-server-config  # CA 서버 구성 파일 디렉터리 공유
     container_name: ca.org1.data-collector.com  # 컨테이너 이름 설정
     networks:  # 컨테이너가 연결될 네트워크 설정
-      - basic
+      basic:
+        aliases:
+          - ca.org1.data-collector.com
 
   ca.org2.data-collector.com:  # Org2의 CA 서비스 정의
     image: hyperledger/fabric-ca:latest  # 사용할 도커 이미지 설정
@@ -74,7 +79,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - ./crypto-config/peerOrganizations/org2.data-collector.com/ca/:/etc/hyperledger/fabric-ca-server-config  # CA 서버 구성 파일 디렉터리 공유
     container_name: ca.org2.data-collector.com  # 컨테이너 이름 설정
     networks:  # 컨테이너가 연결될 네트워크 설정
-      - basic
+      basic:
+        aliases:
+          - ca.org2.data-collector.com
 
   ca.org3.data-collector.com:  # Org3의 CA 서비스 정의
     image: hyperledger/fabric-ca:latest  # 사용할 도커 이미지 설정
@@ -97,7 +104,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - ./crypto-config/peerOrganizations/org3.data-collector.com/ca/:/etc/hyperledger/fabric-ca-server-config  # CA 서버 구성 파일 디렉터리 공유
     container_name: ca.org3.data-collector.com  # 컨테이너 이름 설정
     networks:  # 컨테이너가 연결될 네트워크 설정
-      - basic
+      basic:
+        aliases:
+          - ca.org3.data-collector.com
 
   peer0.org1.data-collector.com: # Org1의 peer0 서비스 정의 시작
     container_name: peer0.org1.data-collector.com # peer0 컨테이너 이름
@@ -129,7 +138,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - 7051:7051 # peer0의 포트 매핑
       - 7052:7052 # 체인코드 포트 매핑
     networks: # peer0가 속할 네트워크 설정
-      - basic # 네트워크 이름
+      basic:
+        aliases:
+          - peer0.org1.data-collector.com
 
   peer1.org1.data-collector.com: # Org1의 peer1 서비스 정의 시작
     container_name: peer1.org1.data-collector.com # peer1 컨테이너 이름
@@ -161,7 +172,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - 8051:8051 # peer1의 포트 매핑
       - 8052:8052 # 체인코드 포트 매핑
     networks: # peer1이 속할 네트워크 설정
-      - basic # 네트워크 이름
+      basic:
+        aliases:
+          - peer1.org1.data-collector.com
 
   peer0.org2.data-collector.com: # Org2의 peer0 서비스 정의 시작
     container_name: peer0.org2.data-collector.com # peer0 컨테이너 이름    
@@ -193,7 +206,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - 9051:9051 # peer0의 포트 매핑
       - 9052:9052 # 체인코드 포트 매핑
     networks: # peer0가 속할 네트워크 설정
-      - basic # 네트워크 이름
+      basic:
+        aliases:
+          - peer0.org2.data-collector.com
 
   peer1.org2.data-collector.com: # Org2의 peer1 서비스 정의 시작
     container_name: peer1.org2.data-collector.com # peer1 컨테이너 이름
@@ -225,7 +240,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - 10051:10051 # peer1의 포트 매핑
       - 10052:10052 # 체인코드 포트 매핑
     networks: # peer1이 속할 네트워크 설정
-      - basic # 네트워크 이름
+      basic:
+        aliases:
+          - peer1.org2.data-collector.com
 
   peer0.org3.data-collector.com: # Org3의 peer0 서비스 정의 시작
     container_name: peer0.org3.data-collector.com # peer0 컨테이너 이름
@@ -257,7 +274,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - 11051:11051 # peer0의 포트 매핑
       - 11052:11052 # 체인코드 포트 매핑
     networks: # peer0가 속할 네트워크 설정
-      - basic # 네트워크 이름
+      basic:
+        aliases:
+          - peer0.org3.data-collector.com
 
   peer1.org3.data-collector.com: # Org3의 peer1 서비스 정의 시작
     container_name: peer1.org3.data-collector.com # peer1 컨테이너 이름
@@ -289,7 +308,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - 12051:12051 # peer1의 포트 매핑
       - 12052:12052 # 체인코드 포트 매핑
     networks: # peer1이 속할 네트워크 설정
-      - basic # 네트워크 이름
+      basic:
+        aliases:
+          - peer1.org3.data-collector.com
 
   cli:
     container_name: cli
@@ -322,7 +343,9 @@ services:  # Docker Compose의 서비스 정의 시작
       - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
       - ./crypto-config/ordererOrganizations/data-collector.com/orderers/orderer.data-collector.com/tls:/etc/hyperledger/orderer/tls
     networks:
-      - basic
+      basic:
+        aliases:
+          - cli
 
 volumes: # 볼륨 정의
   orderer.data-collector.com: # 오더러 볼륨 정의

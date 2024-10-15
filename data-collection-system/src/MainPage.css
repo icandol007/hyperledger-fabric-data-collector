@@ -20,16 +20,6 @@ body {
   overflow: hidden;
 }
 
-.left-section {
-  flex: 1;
-  background: linear-gradient(to top right, #e0e4e8, #f2f6fa);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  height: 100%; /* 전체 높이 사용 */
-}
-
 .right-section {
   flex: 1;
   background-color: #fff;

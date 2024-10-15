@@ -14,7 +14,7 @@ set -e
 CONTAINER_CC_PATH="/opt/gopath/src/github.com/hyperledger/fabric/chaincode/${CHAINCODE_NAME}"
 
 PACKAGE_NAME=${CHAINCODE_NAME}.tar.gz
-rm -f $PACKAGE_NAME
+#rm -f $PACKAGE_NAME
 
 # 컨테이너 내부 경로 생성
 docker exec cli rm -rf ${CONTAINER_CC_PATH}
@@ -52,7 +52,6 @@ get_peer_port() {
   elif [ "$peer" == "peer1" ] && [ "$org" == "org3" ]; then
     echo $peer1_org3_port
   else
-    echo "포트를 찾을 수 없습니다."
     exit 1
   fi
 }
@@ -98,6 +97,7 @@ done
 # 패키징된 ID 확인
 echo "체인코드 설치 확인 중..."
 QUERY_RESULT=$(docker exec -i cli bash -c "peer lifecycle chaincode queryinstalled")
+echo "Query Result: $QUERY_RESULT"
 
 PACKAGE_ID=$(echo "$QUERY_RESULT" | awk -v label="$CHAINCODE_LABEL" '$0 ~ label {getline; gsub("Package ID: ", "", $0); gsub(", Label:.*", "", $0); print}')
 echo "Package ID: $PACKAGE_ID"

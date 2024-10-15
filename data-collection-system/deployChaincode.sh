@@ -14,7 +14,7 @@ set -e
 CONTAINER_CC_PATH="/opt/gopath/src/github.com/hyperledger/fabric/chaincode/${CHAINCODE_NAME}"
 
 PACKAGE_NAME=${CHAINCODE_NAME}.tar.gz
-rm -f $PACKAGE_NAME
+#rm -f $PACKAGE_NAME
 
 # 컨테이너 내부 경로 생성
 docker exec cli rm -rf ${CONTAINER_CC_PATH}

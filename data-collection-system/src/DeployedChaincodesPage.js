@@ -22,7 +22,9 @@ function ChaincodeSelection() {
   }, []);
 
   const handleChaincodeSelect = (chaincode) => {
-    setSelectedChaincode(chaincode);
+    // 마지막 콤마 제거
+    const cleanedName = chaincode.name.slice(-1) === ',' ? chaincode.name.slice(0, -1) : chaincode.name;
+    setSelectedChaincode({ ...chaincode, name: cleanedName });
   };
 
   return (
@@ -36,7 +38,7 @@ function ChaincodeSelection() {
         ))}
       </ul>
 
-      {selectedChaincode && <ChaincodeDataEntry chaincodeName={"AirQuality"} />}
+      {selectedChaincode && <ChaincodeDataEntry chaincodeName={selectedChaincode.name} />}
     </div>
   );
 }

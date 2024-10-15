@@ -32,14 +32,11 @@ const MainPage = () => {
 
   return (
     <div className="main-container">
-      <div className="left-section">
-        {/* Left section can be left empty or with any design */}
-      </div>
       <div className="right-section">
         <h1>Data Collection System</h1>
         {user ? (
           <div className="user-info">
-            <div>Logged in as {user.id}</div>
+            <div>Logged in as {user.id}, {user.organization}</div>
             <button className="button logout-btn" onClick={logout}>로그아웃</button>
           </div>
         ) : (
@@ -55,10 +52,16 @@ const MainPage = () => {
             <button className="button" onClick={() => navigate('/deploy-smart-contract')}>스마트 컨트랙트 배포</button>
           </div>
         )}
-        {user && !user.isAdmin && (
+        {user && !user.isAdmin && user.organization === "org1" && (
           <div className="user-buttons">
-            <button className="button" onClick={() => navigate('/deployed-chaincodes')}>데이터 수집하기</button>
-            <button className="button" onClick={() => navigate('/participate-data-collection')}>데이터 수집에 참여하기</button>
+            <button className="button" onClick={() => navigate('/deploy-smart-contract')}>데이터 수집하기</button>
+            <button className="button" onClick={() => navigate('/deployed-chaincodes')}>나의 데이터 수집</button>
+          </div>
+        )}
+        {user && !user.isAdmin && user.organization === "org2" && (
+          <div className="user-buttons">
+            <button className="button" onClick={() => navigate('/deployed-chaincodes')}>데이터 수집에 참여하기</button>
+            <button className="button" onClick={() => navigate('/deployed-chaincodes')}>내가 참여한 데이터 수집</button>
           </div>
         )}
       </div>

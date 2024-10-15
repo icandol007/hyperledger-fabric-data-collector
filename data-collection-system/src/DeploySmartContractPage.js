@@ -3,11 +3,9 @@ import './DeploySmartContractPage.css'; // 스타일링 파일
 
 function DeploySmartContract() {
   const [chaincodeName, setChaincodeName] = useState('');
-  const [chaincodePath, setChaincodePath] = useState('');
-  const [chaincodeLabel, setChaincodeLabel] = useState('');
   const [loading, setLoading] = useState(false); // 로딩 상태 추가
 
-  const handleDeploy = async () => {
+  const handleDeploy = async (chaincodePath, chaincodeLabel) => {
     setLoading(true); // 로딩 상태 시작
     try {
       const response = await fetch('/api/deploy-smart-contract', {
@@ -38,30 +36,31 @@ function DeploySmartContract() {
 
   return (
     <div className="form-container">
-      <h3>Deploy Smart Contract</h3>
-      <label>Chaincode Name:</label>
+      <h3>기상환경 데이터 수집 시작하기</h3>
+      <label>수집 항목 이름 설정</label>
       <input
         type="text"
         value={chaincodeName}
         onChange={(e) => setChaincodeName(e.target.value)}
         required
       />
-      <label>Chaincode Path:</label>
-      <input
-        type="text"
-        value={chaincodePath}
-        onChange={(e) => setChaincodePath(e.target.value)}
-        required
-      />
-      <label>Chaincode Label:</label>
-      <input
-        type="text"
-        value={chaincodeLabel}
-        onChange={(e) => setChaincodeLabel(e.target.value)}
-        required
-      />
-      <button onClick={handleDeploy} disabled={loading}>
-        {loading ? 'Deploying...' : 'Deploy'}
+      <button
+        onClick={() => handleDeploy('./chaincodes/airQuality.go', 'airQuality')}
+        disabled={loading}
+      >
+        {loading ? '대기질 데이터 수집' : '대기질 데이터 수집'}
+      </button>
+      <button
+        onClick={() => handleDeploy('./chaincodes/waterQuality.go', 'waterQuality')}
+        disabled={loading}
+      >
+        {loading ? '수질 데이터 수집' : '수질 데이터 수집'}
+      </button>
+      <button
+        onClick={() => handleDeploy('./chaincodes/weatherData.go', 'weatherData')}
+        disabled={loading}
+      >
+        {loading ? '날씨 데이터 수집' : '날씨 데이터 수집'}
       </button>
       {loading && <div className="loader"></div>} {/* 로딩 스피너 추가 */}
     </div>

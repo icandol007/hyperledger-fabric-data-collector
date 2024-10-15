@@ -180,7 +180,7 @@ app.get('/api/me', (req, res) => {
   const user = req.session.user; // 세션에서 사용자 정보를 가져옵니다.
   
   if (user) {
-    res.json({ loggedIn: true, id: user.id, isAdmin: user.is_admin });
+    res.json({ loggedIn: true, id: user.id, isAdmin: user.is_admin, organization: user.organization });
   } else {
     res.json({ loggedIn: false });
   }
@@ -188,7 +188,7 @@ app.get('/api/me', (req, res) => {
 
 // ---------------------------로그인 관련--------------------------------------
 // ---------------------------데이터 수집 관련----------------------------------
-
+/*
 // 투표 데이터 수집 API
 app.post('/api/collect-vote-data', (req, res) => {
   const { candidates } = req.body;
@@ -242,6 +242,7 @@ app.post('/api/collect-survey-data', (req, res) => {
     res.json({ message: 'Survey data collected successfully', result });
   });
 });
+*/
 
 // 데이터 수집 API
 app.post('/api/collect-data', (req, res) => {
@@ -389,6 +390,7 @@ app.get('/api/chaincode-metadata/:chaincodeName', async (req, res) => {
   }
 });
 
+/*
 // 체인코드 데이터 추가 API
 app.post('/api/create-asset/:chaincodeName', async (req, res) => {
   const chaincodeName = req.params.chaincodeName;
@@ -417,6 +419,59 @@ app.post('/api/create-asset/:chaincodeName', async (req, res) => {
     res.status(500).json({ error: 'Failed to add chaincode data', details: error.message });
   }
 });
+*/
+
+// Create Asset API
+app.post('/api/create-asset', async (req, res) => {
+  const { chaincodeName, assetData } = req.body;
+  const user = req.session.id;
+
+  try {
+    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+    const gateway = new Gateway();
+
+    await gateway.connect(ccp, {
+      wallet,
+      identity: 'appUser',
+      discovery: { enabled: true, asLocalhost: true }
+    });
+
+    const network = await gateway.getNetwork('mychannel');
+    const contract = network.getContract(chaincodeName);
+
+    // Extract parameters from assetData based on metadata keys
+    const metadataResponse = await contract.evaluateTransaction('GetAssetMetadata');
+    const metadata = JSON.parse(metadataResponse.toString());
+    console.log(metadata);
+
+    // Prepare parameters for passing to the shell script
+    const params = Object.keys(metadata).map(key => `"${assetData[key]}"`).join(' ');
+
+    const createScript = path.join(__dirname, 'createAsset.sh');
+    
+    // Pass each parameter as a separate argument to the shell script
+    exec(`bash ${createScript} ${chaincodeName} ${params}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error('Error creating Assets:', error);
+        return res.status(500).json({ error: 'Failed to create Assets', details: error.message });
+      }
+
+      if (stderr) {
+        console.error('Standard error output from createAsset script:', stderr);
+      }
+
+      console.log('Standard output from createAsset script:', stdout);
+      return res.json({ message: 'Asset created successfully', output: stdout });
+    });
+
+    await gateway.disconnect();
+  } catch (error) {
+    console.error('Error creating asset:', error);
+    return res.status(500).json({ error: 'Failed to create asset', details: error.message });
+  }
+});
+
 
 
 // 모든 문서의 _id 조회 API

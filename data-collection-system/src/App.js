@@ -32,7 +32,7 @@ const App = () => {
         <Route path="/deploy-smart-contract" element={<DeploySmartContractPage />} />
         <Route path="/monitor-smart-contracts" element={<MonitorSmartContracts />} />
         <Route path="/deployed-chaincodes" element={<DeployedChaincodesPage />} />
-        <Route path="/create-asset/:chaincodeName" element={<ChaincodeDataEntry/>} />
+        <Route path="/create-asset" element={<ChaincodeDataEntry/>} />
       </Routes>
     </Router>
   );

@@ -11,11 +11,11 @@ import (
 // 구조체 정의
 type WeatherData struct {
 	Date        string  `json:"date"`
-	Region      string  `json:"region"`
 	MaxTemp     float64 `json:"maxTemp"`
-	MinTemp     float64 `json:"minTemp"`
 	MaxWind     float64 `json:"maxWind"`
+	MinTemp     float64 `json:"minTemp"`
 	MinHumidity int     `json:"minHumidity"`
+	Region      string  `json:"region"`
 }
 
 // SmartContract 구조체 정의
@@ -65,7 +65,7 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
 }
 
 // 기상 데이터 조회 함수
-func (s *SmartContract) QueryWeatherData(ctx contractapi.TransactionContextInterface, date string, region string) (*WeatherData, error) {
+func (s *SmartContract) QueryAsset(ctx contractapi.TransactionContextInterface, date string, region string) (*WeatherData, error) {
 	key := region + "_" + date
 	weatherJSON, err := ctx.GetStub().GetState(key)
 	if err != nil {
@@ -84,15 +84,50 @@ func (s *SmartContract) QueryWeatherData(ctx contractapi.TransactionContextInter
 	return &weather, nil
 }
 
+// 모든 날씨 데이터를 JSON 형식으로 조회하는 함수
+func (s *SmartContract) QueryAllAssets(ctx contractapi.TransactionContextInterface) (string, error) {
+	// 빈 문자열로 범위를 지정해 모든 키를 조회
+	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	if err != nil {
+		return "", fmt.Errorf("모든 자산 조회 실패: %s", err.Error())
+	}
+	defer resultsIterator.Close()
+
+	var assets []WeatherData
+	// 조회된 결과를 반복하여 처리
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return "", err
+		}
+
+		var asset WeatherData
+		err = json.Unmarshal(queryResponse.Value, &asset)
+		if err != nil {
+			return "", fmt.Errorf("JSON 변환 오류: %s", err.Error())
+		}
+
+		assets = append(assets, asset) // 조회된 데이터를 리스트에 추가
+	}
+
+	// 리스트를 JSON 형식으로 직렬화
+	assetsJSON, err := json.Marshal(assets)
+	if err != nil {
+		return "", fmt.Errorf("JSON 직렬화 오류: %s", err.Error())
+	}
+
+	return string(assetsJSON), nil
+}
+
 // WeatherData 메타데이터 반환
 func (s *SmartContract) GetAssetMetadata(ctx contractapi.TransactionContextInterface) (map[string]string, error) {
 	metadata := map[string]string{
-		"Date":        "string",
-		"Region":      "string",
-		"MaxTemp":     "float64",
-		"MinTemp":     "float64",
-		"MaxWind":     "float64",
-		"MinHumidity": "int",
+		"1. Date":        "string",
+		"2. Region":      "string",
+		"3. MaxTemp":     "float64",
+		"4. MinTemp":     "float64",
+		"5. MaxWind":     "float64",
+		"6. MinHumidity": "int",
 	}
 	return metadata, nil
 }

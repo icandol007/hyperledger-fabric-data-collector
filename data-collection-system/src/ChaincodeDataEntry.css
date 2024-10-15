@@ -25,12 +25,18 @@
   }
   
   .chaincode-data-entry-container button {
-    background-color: #4CAF50;
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
     color: white;
     padding: 10px;
     border: none;
     border-radius: 3px;
     cursor: pointer;
+  }
+
+  .chaincode-data-entry-container button:hover {
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   }
   
   .chaincode-data-entry-container button:hover {

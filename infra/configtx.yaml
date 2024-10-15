@@ -89,7 +89,7 @@ Application: &ApplicationDefaults
             Rule: "ANY Writers"
         Admins:
             Type: ImplicitMeta
-            Rule: "MAJORITY Admins"
+            Rule: "ANY Admins"
         Endorsement:
             Type: ImplicitMeta
             Rule: "ANY Endorsement"
@@ -122,7 +122,7 @@ Orderer: &OrdererDefaults
             Rule: "ANY Writers"
         Admins:
             Type: ImplicitMeta
-            Rule: "MAJORITY Admins"
+            Rule: "ANY Admins"
         BlockValidation:
             Type: ImplicitMeta
             Rule: "ANY Writers"
@@ -139,7 +139,7 @@ Channel: &ChannelDefaults
             Rule: "ANY Writers"
         Admins:
             Type: ImplicitMeta
-            Rule: "MAJORITY Admins"
+            Rule: "ANY Admins"
         Endorsement:
             Type: ImplicitMeta
             Rule: "ANY Endorsement"
