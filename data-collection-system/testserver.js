@@ -261,20 +261,35 @@ app.post('/api/collect-data', (req, res) => {
   });
 });
 
-// 데이터 수집 참여 API
-app.post('/api/participate-data-collection', (req, res) => {
-  const { feedback } = req.body;
+// 피드백 제출 API
+app.post('/api/feedback', async (req, res) => {
+  const { chaincodeName, feedback } = req.body;
+  const user = req.session.user.id;
   
-  // 데이터베이스에 피드백을 저장하는 로직을 추가하세요.
-  // 예를 들어, MySQL에 피드백을 저장할 수 있습니다.
-  const query = 'INSERT INTO feedback (feedback) VALUES (?)';
-  db.query(query, [feedback], (err, result) => {
+  const query = 'INSERT INTO feedback (id, chaincodename, feedback) VALUES (?, ?, ?)';
+  db.query(query, [user, chaincodeName, feedback], (err, result) => {
     if (err) {
       console.error('Error submitting feedback:', err);
       res.status(500).json({ error: 'Failed to submit feedback', details: err });
       return;
     }
-    res.json({ message: 'Feedback submitted successfully', result });
+    else {
+      res.json({ message: 'Feedback submitted successfully', result });
+    }
+  });
+});
+
+// 피드백 조회 API
+app.get('/api/view-feedback/:chaincodeName', (req, res) => {
+  const { chaincodeName } = req.params;
+  const query = 'SELECT * FROM feedback WHERE chaincodename = ?';
+  db.query(query, [chaincodeName], (err, results) => {
+    if (err) {
+      console.error('Error retrieving feedback:', err);
+      res.status(500).json({ error: 'Failed to retrieve feedback', details: err });
+      return;
+    }
+    res.json({ feedbacks: results });
   });
 });
 
@@ -283,6 +298,7 @@ app.post('/api/participate-data-collection', (req, res) => {
 // 스마트 컨트랙트 배포 API
 app.post('/api/deploy-smart-contract', async (req, res) => {
   const { chaincodeName, chaincodePath, chaincodeLabel } = req.body;
+  const user = req.session.user.id;
 
   if (!chaincodeName || !chaincodePath || !chaincodeLabel) {
     return res.status(400).json({ error: 'Missing required fields: chaincodeName, chaincodePath, chaincodeLabel' });
@@ -301,9 +317,32 @@ app.post('/api/deploy-smart-contract', async (req, res) => {
     if (stderr) {
       console.error('Standard error output from deployChaincode script:', stderr);
     }
-
     console.log('Standard output from deployChaincode script:', stdout);
-    res.json({ message: 'Smart contract deployed successfully', output: stdout });
+
+    // MySQL에 user와 chaincodeName 저장
+    const query = 'INSERT INTO deployedchaincode (id, chaincodename) VALUES (?, ?)';
+    db.query(query, [user, chaincodeName], (err, result) => {
+      if (err) {
+        console.error('Error saving deployed chaincode info:', err);
+        return res.status(500).json({ error: 'Failed to save deployed chaincode info', details: err });
+      }
+      res.json({ message: 'Smart contract deployed successfully and info saved to DB', output: stdout });
+    });
+  });
+});
+
+// 피드백 조회 API
+app.get('/api/mychaincode/:id', (req, res) => {
+  const { id } = req.params;
+  const user = req.session.user.id;
+  const query = 'SELECT * FROM deployedchaincode WHERE id = ?';
+  db.query(query, [user], (err, results) => {
+    if (err) {
+      console.error('Error retrieving my data collection:', err);
+      res.status(500).json({ error: 'Failed to retrieve data collection', details: err });
+      return;
+    }
+    res.json({ feedbacks: results });
   });
 });
 

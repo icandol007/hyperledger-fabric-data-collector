@@ -58,6 +58,8 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
 
 	key := region + "_" + date
 	fmt.Printf("Generated Key: %s\n", key) // 터미널에 key 출력
+	fmt.Printf("Assets: %s, %s, %d, %f, %f, %f\n", date, region, pm10Value, ozoneValue, no2Value, coValue) // 터미널에 key 출력
+
 	return ctx.GetStub().PutState(key, airQualityJSON)
 }
 

@@ -9,11 +9,12 @@ import TemplateEditorPage from './TemplateEditorPage';
 import ChaincodeContentPage from './ChaincodeContentPage';
 import ChaincodeViewer from './ChaincodeViewer';
 import CollectDataPage from './CollectDataPage';
-import ParticipateDataCollection from './ParticipateDataCollection';
+import Feedback from './FeedbackPage';
 import DeploySmartContractPage from './DeploySmartContractPage';
 import MonitorSmartContracts from './MonitorSmartContracts';
 import DeployedChaincodesPage from './DeployedChaincodesPage';
 import ChaincodeDataEntry from './ChaincodeDataEntry';
+import ViewFeedbackPage from './ViewFeedbackPage';
 
 const App = () => {
   return (
@@ -28,11 +29,12 @@ const App = () => {
         <Route path="/chaincode-content/:id" element={<ChaincodeContentPage />} />
         <Route path="/chaincode-viewer" element={<ChaincodeViewer />} />
         <Route path="/collect-data" element={<CollectDataPage />} />
-        <Route path="/participate-data-collection" element={<ParticipateDataCollection />} />
+        <Route path="/feedback" element={<Feedback />} />
         <Route path="/deploy-smart-contract" element={<DeploySmartContractPage />} />
         <Route path="/monitor-smart-contracts" element={<MonitorSmartContracts />} />
         <Route path="/deployed-chaincodes" element={<DeployedChaincodesPage />} />
-        <Route path="/create-asset" element={<ChaincodeDataEntry/>} />
+        <Route path="/create-asset" element={<ChaincodeDataEntry/>} />        
+        <Route path="/view-feedback" element={<ViewFeedbackPage/>} />        
       </Routes>
     </Router>
   );

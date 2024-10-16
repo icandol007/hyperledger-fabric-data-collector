@@ -47,21 +47,22 @@ const MainPage = () => {
         )}
         {user && user.isAdmin && (
           <div className="admin-buttons">
-            <button className="button" onClick={() => navigate('/template-list')}>스마트 컨트랙트 템플릿 리스트</button>
-            <button className="button" onClick={() => navigate('/monitor-smart-contracts')}>스마트 컨트랙트 모니터링</button>
-            <button className="button" onClick={() => navigate('/deploy-smart-contract')}>스마트 컨트랙트 배포</button>
+            <button className="button" onClick={() => navigate('/template-list')}>스마트 컨트랙트 템플릿 생성</button>
+            <button className="button" onClick={() => navigate('/monitor-smart-contracts')}>스마트 컨트랙트 업데이트</button>
+            <button className="button" onClick={() => navigate('/view-feedback')}>사용자 피드백 조회</button>
           </div>
         )}
         {user && !user.isAdmin && user.organization === "org1" && (
           <div className="user-buttons">
             <button className="button" onClick={() => navigate('/deploy-smart-contract')}>데이터 수집하기</button>
             <button className="button" onClick={() => navigate('/deployed-chaincodes')}>나의 데이터 수집</button>
+            <button className="button" onClick={() => navigate('/feedback')}>피드백</button>
           </div>
         )}
         {user && !user.isAdmin && user.organization === "org2" && (
           <div className="user-buttons">
             <button className="button" onClick={() => navigate('/deployed-chaincodes')}>데이터 수집에 참여하기</button>
-            <button className="button" onClick={() => navigate('/deployed-chaincodes')}>내가 참여한 데이터 수집</button>
+            <button className="button" onClick={() => navigate('/feedback')}>피드백</button>
           </div>
         )}
       </div>
