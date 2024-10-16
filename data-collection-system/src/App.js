@@ -15,6 +15,7 @@ import MonitorSmartContracts from './MonitorSmartContracts';
 import DeployedChaincodesPage from './DeployedChaincodesPage';
 import ChaincodeDataEntry from './ChaincodeDataEntry';
 import ViewFeedbackPage from './ViewFeedbackPage';
+import MyChaincodePage from './MyChaincodePage';
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/deployed-chaincodes" element={<DeployedChaincodesPage />} />
         <Route path="/create-asset" element={<ChaincodeDataEntry/>} />        
         <Route path="/view-feedback" element={<ViewFeedbackPage/>} />        
+        <Route path="/mychaincode" element={<MyChaincodePage/>} />        
       </Routes>
     </Router>
   );

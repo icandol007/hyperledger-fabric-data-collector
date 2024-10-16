@@ -55,7 +55,7 @@ const MainPage = () => {
         {user && !user.isAdmin && user.organization === "org1" && (
           <div className="user-buttons">
             <button className="button" onClick={() => navigate('/deploy-smart-contract')}>데이터 수집하기</button>
-            <button className="button" onClick={() => navigate('/deployed-chaincodes')}>나의 데이터 수집</button>
+            <button className="button" onClick={() => navigate('/mychaincode')}>나의 데이터 수집</button>
             <button className="button" onClick={() => navigate('/feedback')}>피드백</button>
           </div>
         )}

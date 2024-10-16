@@ -331,18 +331,17 @@ app.post('/api/deploy-smart-contract', async (req, res) => {
   });
 });
 
-// 피드백 조회 API
-app.get('/api/mychaincode/:id', (req, res) => {
-  const { id } = req.params;
+// 내가 배포한 체인코드 조회 API
+app.get('/api/mychaincode', (req, res) => {
   const user = req.session.user.id;
   const query = 'SELECT * FROM deployedchaincode WHERE id = ?';
   db.query(query, [user], (err, results) => {
     if (err) {
       console.error('Error retrieving my data collection:', err);
-      res.status(500).json({ error: 'Failed to retrieve data collection', details: err });
+      res.status(500).json({ error: 'Failed to retrieve my data collection', details: err });
       return;
     }
-    res.json({ feedbacks: results });
+    res.json({ chaincodeName: results });
   });
 });
 
