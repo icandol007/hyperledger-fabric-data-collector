@@ -546,6 +546,22 @@ app.put('/api/templates/:id', adminAuth, async (req, res) => {
   }
 });
 
+// 새 템플릿 생성
+app.post('/api/create-template', adminAuth, async (req, res) => {
+  const { _id, content } = req.body;
+  if (!content) {
+    return res.status(400).json({ error: '템플릿을 작성해 주세요.' });
+  }
+
+  try {
+    const response = await chaincodeDB.insert({ _id, content });
+    res.json({ message: 'Template created successfully', response });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create template in CouchDB', details: error });
+  }
+});
+
+
 // 서버 시작
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

@@ -47,7 +47,7 @@ const MainPage = () => {
         )}
         {user && user.isAdmin && (
           <div className="admin-buttons">
-            <button className="button" onClick={() => navigate('/template-list')}>스마트 컨트랙트 템플릿 생성</button>
+            <button className="button" onClick={() => navigate('/create-template')}>스마트 컨트랙트 템플릿 생성</button>
             <button className="button" onClick={() => navigate('/template-list')}>스마트 컨트랙트 업데이트</button>
             <button className="button" onClick={() => navigate('/view-feedback')}>사용자 피드백 조회</button>
           </div>

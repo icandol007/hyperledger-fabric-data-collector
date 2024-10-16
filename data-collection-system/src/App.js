@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MainPage from './MainPage';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
-import TemplateViewPage from './TemplateViewPage';
-import TemplateEditorPage from './TemplateEditorPage';
 import ChaincodeContentPage from './ChaincodeContentPage';
 import ChaincodeViewer from './ChaincodeViewer';
 import CollectDataPage from './CollectDataPage';
@@ -16,6 +14,7 @@ import ChaincodeDataEntry from './ChaincodeDataEntry';
 import ViewFeedbackPage from './ViewFeedbackPage';
 import MyChaincodePage from './MyChaincodePage';
 import ChaincodeTemplatePage from './ChaincodeTemplatePage';
+import CreateTemplatePage from './CreateTemplatePage';
 
 const App = () => {
   return (
@@ -24,9 +23,6 @@ const App = () => {
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/template-list" element={<ChaincodeTemplatePage />} />
-        <Route path="/template-view/:id" element={<TemplateViewPage />} />
-        <Route path="/template-editor/:id" element={<TemplateEditorPage />} />
         <Route path="/chaincode-content/:id" element={<ChaincodeContentPage />} />
         <Route path="/chaincode-viewer" element={<ChaincodeViewer />} />
         <Route path="/collect-data" element={<CollectDataPage />} />
@@ -36,7 +32,9 @@ const App = () => {
         <Route path="/deployed-chaincodes" element={<DeployedChaincodesPage />} />
         <Route path="/create-asset" element={<ChaincodeDataEntry/>} />        
         <Route path="/view-feedback" element={<ViewFeedbackPage/>} />        
-        <Route path="/mychaincode" element={<MyChaincodePage/>} />        
+        <Route path="/mychaincode" element={<MyChaincodePage/>} />  
+        <Route path="/template-list" element={<ChaincodeTemplatePage />} />
+        <Route path="/create-template" element={<CreateTemplatePage/>} />  
       </Routes>
     </Router>
   );
