@@ -533,7 +533,7 @@ app.get('/api/templates/:id', adminAuth, async (req, res) => {
 });
 
 // 특정 문서 수정 API
-app.post('/api/templates/:id', adminAuth, async (req, res) => {
+app.put('/api/templates/:id', adminAuth, async (req, res) => {
   const id = req.params.id;
   const newContent = req.body.content;
   try {

@@ -5,6 +5,7 @@ function MyChaincodePage() {
   const [chaincodes, setChaincodes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedChaincode, setSelectedChaincode] = useState(null);
 
   useEffect(() => {
     const fetchChaincodes = async () => {
@@ -38,10 +39,16 @@ function MyChaincodePage() {
       ) : chaincodes.length > 0 ? (
         <ul>
           {chaincodes.map((chaincode, index) => (
-            <li key={index}>
+            <li key={index} onClick={() => setSelectedChaincode(chaincode.chaincodename)}>
               <div>
                 <strong>Chaincode Name:</strong> {chaincode.chaincodename}
               </div>
+              {selectedChaincode === chaincode.chaincodename && (
+                <div className="buttons-container">
+                  <button className="raw-data-button" onClick={() => handleRawDataDownload(chaincode.chaincodename)}>RAW 데이터 다운로드</button>
+                  <button className="visualize-data-button" onClick={() => handleVisualizeData(chaincode.chaincodename)}>수집 데이터 시각화</button>
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -50,6 +57,16 @@ function MyChaincodePage() {
       )}
     </div>
   );
+
+  function handleRawDataDownload(chaincodeName) {
+    // RAW 데이터 다운로드 로직 구현
+    console.log(`Downloading RAW data for ${chaincodeName}`);
+  }
+
+  function handleVisualizeData(chaincodeName) {
+    // 수집 데이터 시각화 로직 구현
+    console.log(`Visualizing data for ${chaincodeName}`);
+  }
 }
 
 export default MyChaincodePage;

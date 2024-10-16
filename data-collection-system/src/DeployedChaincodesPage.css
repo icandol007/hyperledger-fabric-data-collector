@@ -1,12 +1,12 @@
 
 .chaincode-selection-container {
   overflow-y: auto;
-  width: 400px;
-  margin: 520px;
+  width: 1450px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #f9f9f9;
+  text-align: center;
 }
 
 ul {

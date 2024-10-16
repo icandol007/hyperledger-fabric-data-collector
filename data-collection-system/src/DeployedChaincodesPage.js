@@ -29,7 +29,7 @@ function ChaincodeSelection() {
 
   return (
     <div className="chaincode-selection-container">
-      <h3>Select a Deployed Chaincode</h3>
+      <h3>데이터 수집에 참여할 주제 선택</h3>
       <ul>
         {chaincodes.map((chaincode, index) => (
           <li key={index} onClick={() => handleChaincodeSelect(chaincode)}>

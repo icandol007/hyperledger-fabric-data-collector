@@ -14,6 +14,7 @@ type WaterQualityData struct {
 	Region   string  `json:"region"`
 	Temp     float64 `json:"temp"`
 	PH       float64 `json:"ph"`
+	DO		 float64 `json:"DO"`
 	Salinity float64 `json:"salinity"`
 }
 
@@ -23,7 +24,7 @@ type SmartContract struct {
 }
 
 // 수질 데이터를 저장하는 함수
-func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, date string, region string, temp string, ph string, salinity string) error {
+func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, date string, region string, temp string, ph string, do string, salinity string) error {
 	temperature, err := strconv.ParseFloat(temp, 64)
 	if err != nil {
 		return fmt.Errorf("수온 변환 오류: %s", err.Error())
@@ -31,6 +32,10 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
 	phValue, err := strconv.ParseFloat(ph, 64)
 	if err != nil {
 		return fmt.Errorf("pH 변환 오류: %s", err.Error())
+	}
+	doValue, err := strconv.ParseFloat(do, 64)
+	if err != nil {
+		return fmt.Errorf("DO 변환 오류: %s", err.Error())
 	}
 	salinityValue, err := strconv.ParseFloat(salinity, 64)
 	if err != nil {
@@ -42,6 +47,7 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
 		Region:   region,
 		Temp:     temperature,
 		PH:       phValue,
+		DO:		  doValue,
 		Salinity: salinityValue,
 	}
 
@@ -129,6 +135,7 @@ func (s *SmartContract) GetAssetMetadata(ctx contractapi.TransactionContextInter
 		"2. Region":   "string",
 		"3. Temp":     "float64",
 		"4. PH":       "float64",
+		"5. DO": 	   "float64",
 		"5. Salinity": "float64",
 	}
 	return metadata, nil

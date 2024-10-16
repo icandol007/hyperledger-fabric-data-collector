@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MainPage from './MainPage';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
-import TemplateListPage from './TemplateListPage';
 import TemplateViewPage from './TemplateViewPage';
 import TemplateEditorPage from './TemplateEditorPage';
 import ChaincodeContentPage from './ChaincodeContentPage';
@@ -16,6 +15,7 @@ import DeployedChaincodesPage from './DeployedChaincodesPage';
 import ChaincodeDataEntry from './ChaincodeDataEntry';
 import ViewFeedbackPage from './ViewFeedbackPage';
 import MyChaincodePage from './MyChaincodePage';
+import ChaincodeTemplatePage from './ChaincodeTemplatePage';
 
 const App = () => {
   return (
@@ -24,7 +24,7 @@ const App = () => {
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/template-list" element={<TemplateListPage />} />
+        <Route path="/template-list" element={<ChaincodeTemplatePage />} />
         <Route path="/template-view/:id" element={<TemplateViewPage />} />
         <Route path="/template-editor/:id" element={<TemplateEditorPage />} />
         <Route path="/chaincode-content/:id" element={<ChaincodeContentPage />} />
