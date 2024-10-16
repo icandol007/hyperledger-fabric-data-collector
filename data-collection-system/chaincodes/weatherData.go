@@ -61,6 +61,7 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
 
 	// 블록체인에 저장 (키는 "region_date" 형식)
 	key := region + "_" + date
+	fmt.Printf("Generated Key: %s\n", key) // 터미널에 key 출력
 	return ctx.GetStub().PutState(key, weatherJSON)
 }
 

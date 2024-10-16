@@ -362,19 +362,49 @@ app.get('/api/deployed-chaincodes', (req, res) => {
   });
 });
 
-// 체인코드 메타데이터 조회 API
-app.get('/api/chaincode-metadata/:chaincodeName', async (req, res) => {
+// 모든 체인코드 데이터를 조회하는 API
+app.get('/api/query-all-assets/:chaincodeName', async (req, res) => {
   const chaincodeName = req.params.chaincodeName;
-  const user = req.session.id;
+  const user = req.session.user.id;
 
   try {
     const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
-    const wallet = await Wallets.newFileSystemWallet(walletPath);
+    const orgPath = path.join(process.cwd(), 'server/wallet/org1');
+    const wallet = await Wallets.newFileSystemWallet(orgPath);
     const gateway = new Gateway();
 
     await gateway.connect(ccp, {
       wallet,
-      identity: 'appUser',
+      identity: user,
+      discovery: { enabled: true, asLocalhost: true }
+    });
+
+    const network = await gateway.getNetwork('mychannel');
+    const contract = network.getContract(chaincodeName);
+
+    const assetsJSON = await contract.evaluateTransaction('QueryAllAssets');
+    res.status(200).json(JSON.parse(assetsJSON.toString()));
+    await gateway.disconnect();
+  } catch (error) {
+    console.error('Error querying all assets:', error);
+    res.status(500).json({ error: 'Failed to query all assets', details: error.message });
+  }
+});
+
+// 체인코드 메타데이터 조회 API
+app.get('/api/chaincode-metadata/:chaincodeName', async (req, res) => {
+  const chaincodeName = req.params.chaincodeName;
+  const user = req.session.user.id;
+
+  try {
+    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+    const orgPath = path.join(process.cwd(), 'server/wallet/org2');
+    const wallet = await Wallets.newFileSystemWallet(orgPath);
+    const gateway = new Gateway();
+
+    await gateway.connect(ccp, {
+      wallet,
+      identity: user,
       discovery: { enabled: true, asLocalhost: true }
     });
 
@@ -390,16 +420,15 @@ app.get('/api/chaincode-metadata/:chaincodeName', async (req, res) => {
   }
 });
 
-/*
-// 체인코드 데이터 추가 API
-app.post('/api/create-asset/:chaincodeName', async (req, res) => {
-  const chaincodeName = req.params.chaincodeName;
-  const user = req.session.id;
-  const { assetId, assetData } = req.body;  // 사용자가 보낼 데이터
+// Create Asset API
+app.post('/api/create-asset', async (req, res) => {
+  const { chaincodeName, assetData } = req.body;
+  const user = req.session.user.id;
 
   try {
     const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
-    const wallet = await Wallets.newFileSystemWallet(walletPath);
+    const orgPath = path.join(process.cwd(), 'server/wallet/org2');
+    const wallet = await Wallets.newFileSystemWallet(orgPath);
     const gateway = new Gateway();
 
     await gateway.connect(ccp, {
@@ -411,42 +440,14 @@ app.post('/api/create-asset/:chaincodeName', async (req, res) => {
     const network = await gateway.getNetwork('mychannel');
     const contract = network.getContract(chaincodeName);
 
-    await contract.submitTransaction('CreateAirQuality', assetId, JSON.stringify(assetData));
-    res.status(200).json({ message: 'Asset successfully added' });
-    await gateway.disconnect();
-  } catch (error) {
-    console.error('Error adding chaincode data:', error);
-    res.status(500).json({ error: 'Failed to add chaincode data', details: error.message });
-  }
-});
-*/
-
-// Create Asset API
-app.post('/api/create-asset', async (req, res) => {
-  const { chaincodeName, assetData } = req.body;
-  const user = req.session.id;
-
-  try {
-    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
-    const wallet = await Wallets.newFileSystemWallet(walletPath);
-    const gateway = new Gateway();
-
-    await gateway.connect(ccp, {
-      wallet,
-      identity: 'appUser',
-      discovery: { enabled: true, asLocalhost: true }
-    });
-
-    const network = await gateway.getNetwork('mychannel');
-    const contract = network.getContract(chaincodeName);
-
     // Extract parameters from assetData based on metadata keys
     const metadataResponse = await contract.evaluateTransaction('GetAssetMetadata');
     const metadata = JSON.parse(metadataResponse.toString());
-    console.log(metadata);
 
     // Prepare parameters for passing to the shell script
     const params = Object.keys(metadata).map(key => `"${assetData[key]}"`).join(' ');
+
+    console.log(params);
 
     const createScript = path.join(__dirname, 'createAsset.sh');
     
@@ -471,8 +472,6 @@ app.post('/api/create-asset', async (req, res) => {
     return res.status(500).json({ error: 'Failed to create asset', details: error.message });
   }
 });
-
-
 
 // 모든 문서의 _id 조회 API
 app.get('/api/templates', adminAuth, async (req, res) => {
@@ -506,38 +505,6 @@ app.post('/api/templates/:id', adminAuth, async (req, res) => {
     res.json({ message: 'Template updated successfully', response });
   } catch (error) {
     res.status(500).json({ error: 'Failed to update template in CouchDB', details: error });
-  }
-});
-
-// 스마트 컨트랙트 배포 API
-app.post('/api/deploy-smart-contracts', adminAuth, async (req, res) => {
-  const { templateId } = req.body;
-
-  try {
-    const template = await chaincodeDB.get(templateId);
-
-    // 스마트 컨트랙트 배포 로직을 구현
-    // Fabric 네트워크를 통해 실제 배포를 수행
-
-    const wallet = await Wallets.newFileSystemWallet(walletPath);
-    const gateway = new Gateway();
-
-    await gateway.connect(ccpPath, {
-      wallet,
-      identity: 'admin',
-      discovery: { enabled: true, asLocalhost: true }
-    });
-
-    const network = await gateway.getNetwork('mychannel');
-    const contract = network.getContract('mychaincode');
-
-    await contract.submitTransaction('deployContract', templateId, JSON.stringify(template));
-
-    await gateway.disconnect();
-
-    res.json({ message: 'Smart contract deployed successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to deploy smart contract', details: error });
   }
 });
 

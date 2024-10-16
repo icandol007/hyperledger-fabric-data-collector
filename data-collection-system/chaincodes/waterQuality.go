@@ -51,6 +51,7 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
 	}
 
 	key := region + "_" + date
+	fmt.Printf("Generated Key: %s\n", key) // 터미널에 key 출력
 	return ctx.GetStub().PutState(key, waterQualityJSON)
 }
 
