@@ -15,6 +15,7 @@ import ViewFeedbackPage from './ViewFeedbackPage';
 import MyChaincodePage from './MyChaincodePage';
 import ChaincodeTemplatePage from './ChaincodeTemplatePage';
 import CreateTemplatePage from './CreateTemplatePage';
+import VisualizationPage from './VisualizationPage';
 
 const App = () => {
   return (
@@ -35,6 +36,8 @@ const App = () => {
         <Route path="/mychaincode" element={<MyChaincodePage/>} />  
         <Route path="/template-list" element={<ChaincodeTemplatePage />} />
         <Route path="/create-template" element={<CreateTemplatePage/>} />  
+        <Route path="/download-raw-data" element={<MyChaincodePage/>} /> 
+        <Route path="/visualization" element={<VisualizationPage/>} />
       </Routes>
     </Router>
   );

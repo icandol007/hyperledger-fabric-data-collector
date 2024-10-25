@@ -36,7 +36,7 @@ function DeploySmartContract() {
 
   return (
     <div className="form-container">
-      <h3>기상환경 데이터 수집 시작하기</h3>
+      <h3>데이터 수집 시작하기</h3>
       <label>수집 항목 이름 설정</label>
       <input
         type="text"

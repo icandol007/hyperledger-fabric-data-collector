@@ -485,7 +485,7 @@ app.post('/api/create-asset', async (req, res) => {
     // Prepare parameters for passing to the shell script
     const params = Object.keys(metadata).map(key => `"${assetData[key]}"`).join(' ');
 
-    console.log(params);
+    //console.log(params);
 
     const createScript = path.join(__dirname, 'createAsset.sh');
     
@@ -497,10 +497,10 @@ app.post('/api/create-asset', async (req, res) => {
       }
 
       if (stderr) {
-        console.error('Standard error output from createAsset script:', stderr);
+        console.error('Standard output from createAsset script:', stderr);
       }
 
-      console.log('Standard output from createAsset script:', stdout);
+      //console.log('Standard output from createAsset script:', stdout);
       return res.json({ message: 'Asset created successfully', output: stdout });
     });
 
@@ -510,6 +510,20 @@ app.post('/api/create-asset', async (req, res) => {
     return res.status(500).json({ error: 'Failed to create asset', details: error.message });
   }
 });
+
+// RAW 데이터 다운로드 API
+app.get('/api/download-raw-data', async (req, res) => {
+  try {
+    const doc = await chaincodeDB.get('test-template'); 
+    res.setHeader('Content-Disposition', 'attachment; filename="raw_data.json"');
+    res.setHeader('Content-Type', 'application/json');
+    res.send(doc);
+  } catch (error) {
+    console.error('Error retrieving raw data:', error);
+    res.status(500).json({ error: 'Failed to retrieve raw data from CouchDB', details: error });
+  }
+});
+
 
 // 모든 문서의 _id 조회 API
 app.get('/api/templates', adminAuth, async (req, res) => {
